@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
-void affichage(char* tableau[], int* taille)
+void affichage(char* tableau[], int taille) //Pour test/debug
 {
-    for (int j=0; j<*taille; j++)
+    for (int j=0; j<taille; j++)
     {
+        printf("%d\n",j);
         printf("%s\n",tableau[j]);
     }
 }
@@ -26,36 +28,33 @@ int extraction_mots(char* mots[], char* nom_fichier, int nb_lettres)
         fscanf(fichier, "%s",buffer);
         if (strlen(buffer) == nb_lettres)
         {
+            printf("+%s\n",buffer);
             mots[i] = buffer;
-            //printf("%s\n",buffer);
-            //printf("mots à %d lettres : %d\n",nb_lettres,i);
-            //affichage(mots, i);
             i++;
         }
     } 
-    printf("%d\n",i);
-    *nb_mots = i;
-    printf("Fin d'acquisition des mots.\n");
+    printf("Fin d'acquisition des mots : %d mots à %d lettres\n",i,nb_lettres);
+    return i-1;
 }
 
-
+char* choix_mot(char* mots[], int nb_mots)
+{
+    srand(time(0));
+    int random = rand()%nb_mots+1;
+    printf("random = %d\n",random);
+    return mots[random];
+}
 
 int main(int argc, char* argv[])
 {
     char* nom_fichier = "liste_francais.txt";
-    int* nb_mots = 0;
     int taille_test=5000;
     char* mots[taille_test];
-    //int n_test = 5000;
-    //char** mots = malloc(n_test*sizeof(char*));
-    
 
-    //mots = (char**) malloc(n_test*sizeof(char*)); //5000 pour tester
-    //for(int k=0; k<n_test; k++) mots[k] = (char*) malloc(5*sizeof(char));
-    extraction_mots(mots, nom_fichier,5, nb_mots);
-    printf("Acq ok\n");
-    printf("%d\n", *nb_mots);
+    int nb_mots = extraction_mots(mots, nom_fichier,5);
+    printf("%d\n", nb_mots);
     affichage(mots, nb_mots);
+    choix_mot(mots,nb_mots);
 
     return 0;
 }
