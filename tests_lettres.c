@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "tests_lettres.h"
 
 //Tests des lettres entre essais et mot à deviner
 
@@ -10,22 +11,22 @@
 // 1 pour bonne lettre à mauvaise place
 // 2 pour bonne lettre à la bonne place
 
-void printf_vert()
+void printf_vert() //Passe les caractères de console en vert gras
 {
     printf("\033[1;32m");
 }
 
-void printf_jaune()
+void printf_jaune() //Passe les caractères de console en jaune gras
 {
     printf("\033[1;33m");
 }
 
-void printf_blanc()
+void printf_blanc() //Passe les caractères de console en blanc gras
 {
     printf("\033[1;37m");
 }
 
-void printf_standard()
+void printf_standard() //Passe les caractères de console en format standard
 {
     printf("\033[0;37m");
 }
@@ -82,6 +83,7 @@ void test_lettre(char* mot, char* essai, int resultat[], int nb_lettres)
             if (essai[i]==mot[k] && trace[k]==0 && resultat[k]!=2)
             {
                 resultat[i]=1;
+                trace[k]=1;
             }
         }
     }
@@ -100,6 +102,7 @@ void acquisition_clavier(char* essai, int nb_lettres)
     printf_standard();
 }
 
+/*
 int main(int argc, char* argv[])
 {
     char* mot="PORTE";
@@ -116,5 +119,5 @@ int main(int argc, char* argv[])
     //affichage_debug(resultat,nb_lettres);
 
     affichage_resultat(essai, resultat, nb_lettres);
-
 }
+*/

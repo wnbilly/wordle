@@ -2,15 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include "acquisition.h"
 
 //Acquisition des mots de nb_lettres dans un dictionnaire + Choix aléatoire d'un mot
 
-void printf_vert()
-{
-    printf("\033[0;32m");
-}
 
-void affichage(char* tableau[], int taille) //Pour test/debug
+void affichage_tableau_mots(char* tableau[], int taille) //Pour test/debug
 {
     for (int j=0; j<=taille; j++)
     {
@@ -54,19 +51,18 @@ char* choix_mot(char* mots[], int nb_mots)
     printf("%de mot choisi : %s\n",random,mots[random]);
     return mots[random];
 }
-
+/*
 int main(int argc, char* argv[])
 {
     char* nom_fichier = "liste_francais.txt";
     int taille_test=5000;
     char* mots[taille_test];//=malloc(taille_test*sizeof(char*));
 
-    printf_vert();
-
     int nb_mots = extraction_mots(mots, nom_fichier,5);
     
-    affichage(mots, nb_mots);
+    affichage_tableau_mots(mots, nb_mots);
     choix_mot(mots,nb_mots);
 
     return 0;
 }
+*/
