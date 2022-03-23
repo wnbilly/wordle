@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 //Tests des lettres entre essais et mot à deviner
 
@@ -89,15 +90,21 @@ void test_lettre(char* mot, char* essai, int resultat[], int nb_lettres)
 void acquisition_clavier(char* essai, int nb_lettres)
 {
     printf_blanc();
-    printf("Veuillez taper vos %d lettres : ", nb_lettres);
+    printf("Veuillez taper vos %d lettres\n -> ", nb_lettres);
     scanf("%s",essai);
+    if (strlen(essai)!=nb_lettres)
+    {
+        printf("Erreur : MAUVAIS NOMBRE DE LETTRES\n\n");
+        acquisition_clavier(essai, nb_lettres);
+    }
+    printf_standard();
 }
 
 int main(int argc, char* argv[])
 {
     char* mot="PORTE";
     int nb_lettres=5;
-    char essai[nb_lettres];
+    char essai[nb_lettres+1]; //+1 pour détecter si l'utilisateur met trop de lettres
     //char* essai;
     acquisition_clavier(essai, nb_lettres);
     

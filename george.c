@@ -3,7 +3,7 @@
 #include <string.h>
 #include <time.h>
 
-//Acquisition des mots de nb_lettres + Choix aléatoire d'un mot
+//Acquisition des mots de nb_lettres dans un dictionnaire + Choix aléatoire d'un mot
 
 void printf_vert()
 {
