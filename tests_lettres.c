@@ -90,7 +90,7 @@ void test_place(char* mot, char* essai, int resultat[], int nb_lettres)
 
 void test_lettre(char* mot, char* essai, int resultat[], int nb_lettres)
 {
-    int* trace=(int*) calloc(nb_lettres,sizeof(int)); //Pour se rappeler des lettres déjà détectées : 1 si déjà détectée, 0 sinon
+    int* trace = (int*) calloc(nb_lettres,sizeof(int)); //Pour se rappeler des lettres déjà détectées : 1 si déjà détectée, 0 sinon
     for (int i=0; i<nb_lettres; i++)
     {
         for (int k=0; k<nb_lettres; k++)
