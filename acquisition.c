@@ -5,7 +5,7 @@
 #include "acquisition.h"
 
 //Acquisition des mots de nb_lettres dans un dictionnaire + Choix aléatoire d'un mot
-
+// 4 <= nb_lettres <= 12
 
 void affichage_tableau_mots(char* tableau[], int taille) //Pour test/debug
 {
@@ -16,11 +16,18 @@ void affichage_tableau_mots(char* tableau[], int taille) //Pour test/debug
     }
 }
 
-int extraction_mots(char* mots[], char* nom_fichier, int nb_lettres)
+int extraction_mots(char* mots[], char* nom_fichier, int nb_lettres) //FONCTION A MODIFIER SI PLUSIEURS LISTES PAR NB DE LETTRES
 {
 
-  
-    FILE* fichier = fopen(nom_fichier,"r");
+    int taille_additionnelle = strlen(nom_fichier);
+    char chemin[12+taille_additionnelle];
+
+    strcpy(chemin, "listes_mots/");
+    strcat(chemin, nom_fichier);
+
+    printf("Chemin : %s\n", chemin);
+
+    FILE* fichier = fopen(chemin,"r");
     if (fichier == NULL) 
     {
         printf("Erreur fichier\n");
@@ -33,13 +40,14 @@ int extraction_mots(char* mots[], char* nom_fichier, int nb_lettres)
         char* buffer = malloc(30); //30 car le plus long mot fr fait 27 lettres + marge
     
         fscanf(fichier, "%s",buffer);
-        if (strlen(buffer) == nb_lettres && strcmp(buffer,"zygote")!=0)
+        if (strlen(buffer) == nb_lettres)
         {
-            printf("+%s\n",buffer);
+            //printf("+%s\n",buffer);
             mots[i] = buffer;
             i++;
         }
     } 
+    fclose(fichier);
     printf("Fin d'acquisition des mots : %d mots à %d lettres\n",i,nb_lettres);
     return i-1;
 }
@@ -48,7 +56,7 @@ char* choix_mot(char* mots[], int nb_mots)
 {
     srand(time(0));
     int random = rand()%nb_mots+1;
-    printf("%de mot choisi : %s\n",random,mots[random]);
+    //printf("%de mot choisi : %s\n",random,mots[random]);
     return mots[random];
 }
 /*

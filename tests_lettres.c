@@ -16,10 +16,26 @@ void printf_vert() //Passe les caractères de console en vert gras
     printf("\033[1;32m");
 }
 
+void printf_fond_vert() //Passe le fond de console en vert gras
+{
+    printf("\033[7;32m");
+}
+
 void printf_jaune() //Passe les caractères de console en jaune gras
 {
     printf("\033[1;33m");
 }
+
+void printf_rouge() //Passe les caractères de console en rouge gras
+{
+    printf("\033[1;31m");
+}
+
+void printf_fond_rouge() //Passe le fond de console en rouge gras
+{
+    printf("\033[7;31m");
+}
+
 
 void printf_blanc() //Passe les caractères de console en blanc gras
 {
@@ -80,13 +96,25 @@ void test_lettre(char* mot, char* essai, int resultat[], int nb_lettres)
     {
         for (int k=0; k<nb_lettres; k++)
         {
-            if (essai[i]==mot[k] && trace[k]==0 && resultat[k]!=2)
+            if (essai[i]==mot[k] && trace[k]==0 && resultat[i]!=2)
             {
                 resultat[i]=1;
                 trace[k]=1;
             }
         }
     }
+}
+
+int test_existence_mot(char *mots[], char* essai, int nb_mots)
+{
+    for (int i=0; i<nb_mots; i++)   //AMELIORABLE SI LA LISTE EST TRIEE PAR ORDRE ALPHABETIQUE
+        {
+            if (strcmp(mots[i],essai)==0)
+            {
+                return 1;
+            }
+        }
+    return 0;
 }
 
 void acquisition_clavier(char* essai, int nb_lettres)
