@@ -36,7 +36,6 @@ void printf_fond_rouge() //Passe le fond de console en rouge gras
     printf("\033[7;31m");
 }
 
-
 void printf_blanc() //Passe les caractères de console en blanc gras
 {
     printf("\033[1;37m");
@@ -147,5 +146,6 @@ int main(int argc, char* argv[])
     //affichage_debug(resultat,nb_lettres);
 
     affichage_resultat(essai, resultat, nb_lettres);
+    return 0;
 }
 */

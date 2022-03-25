@@ -35,19 +35,43 @@ void reset_resultat(int resultat[], int nb_lettres)
     }
 }
 
+void affichage_gagne(int nb_essais)
+{
+    printf_fond_vert();
+    printf("VOUS AVEZ GAGNE EN %d ESSAIS !\n", nb_essais);
+    printf_standard();
+}
+
+void affichage_perdu(char* mot_cible)
+{
+    printf_fond_rouge();
+    printf("PERDU, Le mot était ");
+    printf_blanc();
+    printf(" %s\n", mot_cible);
+    printf_standard();
+}
+
 int main(int argc, char* argv[])
 {
     //AFFICHAGE REGLES ET BIENVENUE ETC
 
     //PARAMETRES DE LA PARTIE
     int max_essais = 6;
-    int nb_lettres = 5;
+    int nb_lettres;
+
+    printf("Nombre de lettres dans [4;12] :");
+    
+    scanf("%d", &nb_lettres);
+
+    printf("Nombre d'essais :");
+    
+    scanf("%d", &max_essais);
 
     //ACQUISITION MOTS
     char* nom_fichier = "liste_complete_triee.txt";
-    int taille_test = 5100;
+    int taille_test = 10000;
     char* mots[taille_test];//=malloc(taille_test*sizeof(char*));
-    int nb_mots = extraction_mots(mots, nom_fichier,5);
+    int nb_mots = extraction_mots(mots, nom_fichier, nb_lettres);
     
     //VARIABLES A MANIPULER
     char essai[nb_lettres+1]; //+1 pour détecter si l'utilisateur met trop de lettres
@@ -64,6 +88,7 @@ int main(int argc, char* argv[])
     for (nb_essais=0; nb_essais<max_essais; nb_essais++)
     {
         //Le joueur entre sa proposition
+        printf("Essai %d/%d. ", nb_essais, max_essais);
         acquisition_clavier(essai, nb_lettres);
 
         //On vérifie si le mot est dans la liste
@@ -83,9 +108,7 @@ int main(int argc, char* argv[])
         //TEST VICTOIRE
         if (test_victoire(resultat, nb_lettres)==1)
         {           //GAGNE
-            printf_fond_vert();
-            printf("VOUS AVEZ GAGNE EN %d ESSAIS !\n", nb_essais);
-            printf_standard();
+            affichage_gagne(nb_essais);
             break;
         } else {    //PAS GAGNE
             reset_resultat(resultat, nb_lettres);
@@ -94,11 +117,7 @@ int main(int argc, char* argv[])
 
     if (nb_essais == max_essais)
     {
-        printf_fond_rouge();
-        printf("PERDU, Le mot était ");
-        printf_blanc();
-        printf("%s\n", mot_cible);
-        printf_standard();
+        affichage_perdu(mot_cible);
     }
     
 

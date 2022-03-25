@@ -11,6 +11,8 @@ void printf_rouge();
 
 void printf_fond_rouge();
 
+void printf_gris();
+
 void printf_blanc();
 
 void printf_standard();
