@@ -3,6 +3,7 @@
 #include <string.h>
 #include "acquisition.h"
 #include "tests_lettres.h"
+#include "calculs.h"
 
 //Main du Wordle
 //Compile avec gcc -Wall -Werror -Wfatal-errors -o JEU jeu.c acquisition.c tests_lettres.c && ./JEU
@@ -56,7 +57,7 @@ int main(int argc, char* argv[])
     //AFFICHAGE REGLES ET BIENVENUE ETC
 
     //PARAMETRES DE LA PARTIE
-    int max_essais = 6;
+    int max_essais;
     int nb_lettres;
 
     printf("Nombre de lettres dans [4;12] :");

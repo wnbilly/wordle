@@ -64,13 +64,13 @@ int correspondance_ltr_verte(char* mot_test, char lst_lettres[], int lst_etats[]
     return 1;
 }
 
-int* extraction_donnees(char* essai, int resultat[], char lst_lettres[], int lst_etats[], int lst_pos[], char* lst_lettres_ban);
+int* extraction_donnees(char* essai, int resultat[], char lst_lettres[], int lst_etats[], int lst_pos[], char* lst_lettres_ban)
 {
     int nb_lettres = strlen(essai);
     int indice_donnees = strlen[lst_lettres];
     for (int i=0; i<nb_lettres; i++)
     {
-        if (resultat[i]!=0) //Test if pas assez complet --> risque de doublon dans les listes de données !!
+        if (resultat[i]!=0) 
         {
             lst_lettres[indice_donnees]=essai[i];
             lst_etats[indice_donnees]=resultat[i];
