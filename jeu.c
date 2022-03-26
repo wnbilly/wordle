@@ -8,6 +8,7 @@
 //Main du Wordle
 //Compile avec gcc -Wall -Werror -Wfatal-errors -o JEU jeu.c acquisition.c tests_lettres.c && ./JEU
 
+//Essai+resultat = données = mots probables
 
 /*
 void initialisation_partie(char* mot_cible, )

@@ -8,8 +8,10 @@
 
 //Liste des lettres dans la réponse => char lst_ltr[nb_lettres]
 //Liste de leurs etats : 0 si pas dans le mot, 1 si dans le mot à la mauvaise place, 2 si dans le mot à la bonne place
-int lettre_est_dans(char* mot, char lettre, int nb_lettres)
+
+int lettre_est_dans(char* mot, char lettre) //Renvoie 1 si la lettre est dans le mot, 0 sinon
 {
+    int nb_lettres = strlen(mot);
     for (int i=0; i<nb_lettres; i++)
     {
         if (mot[i]==lettre) return 1;
@@ -64,10 +66,25 @@ int correspondance_ltr_verte(char* mot_test, char lst_lettres[], int lst_etats[]
     return 1;
 }
 
+int test_ltr_ban(char* mot_test, char* lst_lettres_ban)
+{
+    int nb_lettres_ban = strlen(lst_lettres_ban);
+    printf("%d lettres bannies\n", nb_lettres_ban);
+    for (int i=0; i<nb_lettres_ban; i++)
+    {
+        if (lettre_est_dans(mot_test, lst_lettres_ban[i])==1) 
+        {
+            printf("%c est dans le mot %s\n", lst_lettres_ban[i], mot_test);
+            return 0; //Au moins une lettre bannie est dans le mot
+        }
+    }
+    return 1; //Le mot ne contient pas de lettre bannie
+}
+/*
 int* extraction_donnees(char* essai, int resultat[], char lst_lettres[], int lst_etats[], int lst_pos[], char* lst_lettres_ban)
 {
     int nb_lettres = strlen(essai);
-    int indice_donnees = strlen[lst_lettres];
+    int indice_donnees = strlen(lst_lettres);
     for (int i=0; i<nb_lettres; i++)
     {
         if (resultat[i]!=0) 
@@ -76,15 +93,22 @@ int* extraction_donnees(char* essai, int resultat[], char lst_lettres[], int lst
             lst_etats[indice_donnees]=resultat[i];
             lst_pos[indice_donnees]=i;
         } else { //On bannit les lettres en gris
-            strcat(lst_lettres_ban, essai[i]);
+            char temp_char[] = {essai[i]};
+            strcat(lst_lettres_ban, temp_char);
         }
     }
+    printf
 }
-
+*/
 /*
-char** liste_mots_prob(char* mots_a_tester[], char lst_lettres[], int lst_etats[], int lst_pos[])
+char** liste_mots_prob(char* mots_a_tester[], int nb_mots, char lst_lettres[], int lst_etats[], int lst_pos[])
 {
-
+    for (int i=0; i<nb_mots; i++)
+    {
+        char* mot_test = mots_a_tester[i];
+        if (correspondance_ltr_jaune(char* mot_test, char lst_lettres[], int lst_etats[])==1 && correspondance_ltr_verte(char* mot_test, char lst_lettres[], int lst_etats[], int lst_pos[])==1)
+{
+    }
 }
 */
 
@@ -97,16 +121,17 @@ int main(int argc, char* argv[])
     int lst_etats[nb_infos_ltr]; //Equivalent de resultat
     int lst_pos[nb_infos_ltr]; //Position des lettres vertes, vaut -1 si lettre jaune
     */      
-    char lst_lettres[] = {'a', 'o', 'h', 't', 'a'};
+    char lst_lettres[] = {'a', 'o', 'h'};
     int lst_etats[] = {1, 1, 1, 1, 1}; //Equivalent de resultat dans les autres codes
     int lst_pos[] = {4, 1, 0, 3, 1};
+    char lst_lettres_ban[] = {'t', 'b'};
     
     //char* mot_cible = "porte";
     char* mot_test = "aloha";
 
     printf("corres_verte : %d\n",correspondance_ltr_verte(mot_test, lst_lettres, lst_etats, lst_pos));
     printf("corres_jaune : %d\n",correspondance_ltr_jaune(mot_test, lst_lettres, lst_etats));
-
+    printf("corres_ban: %d\n",test_ltr_ban(mot_test, lst_lettres_ban));
 
     return 0;
 }
