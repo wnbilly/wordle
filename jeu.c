@@ -90,7 +90,7 @@ int main(int argc, char* argv[])
     for (nb_essais=0; nb_essais<max_essais; nb_essais++)
     {
         //Le joueur entre sa proposition
-        printf("Essai %d/%d. ", nb_essais, max_essais);
+        printf("Essai %d/%d. ", nb_essais+1, max_essais);
         acquisition_clavier(essai, nb_lettres);
 
         //On vérifie si le mot est dans la liste
