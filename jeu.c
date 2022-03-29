@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
     //INITIALISATION PARTIE
     char* mot_cible = choix_mot(mots,nb_mots);
 
-    int* resultat=(int*) calloc(nb_lettres,sizeof(int));
+    int* resultat = (int*) calloc(nb_lettres,sizeof(int));
     int nb_essais = 0;
     
     //TOURS

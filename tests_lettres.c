@@ -90,15 +90,19 @@ void test_place(char* mot, char* essai, int resultat[], int nb_lettres)
 
 void test_lettre(char* mot, char* essai, int resultat[], int nb_lettres)
 {
+    
+    affichage_debug(resultat, nb_lettres);
     int* trace = (int*) calloc(nb_lettres,sizeof(int)); //Pour se rappeler des lettres déjà détectées : 1 si déjà détectée, 0 sinon
-    for (int i=0; i<nb_lettres; i++)
+    for (int i=0; i<nb_lettres; i++) //i indice de l'essai
     {
-        for (int k=0; k<nb_lettres; k++)
+        for (int k=0; k<nb_lettres; k++) //indice du mot à deviner
         {
-            if (essai[i]==mot[k] && trace[k]==0 && resultat[i]!=2)
+            if (essai[i]==mot[k] && trace[k]==0 && resultat[k]!=2)
             {
                 resultat[i]=1;
                 trace[k]=1;
+                affichage_debug(resultat, nb_lettres);
+                affichage_debug(trace, nb_lettres);
             }
         }
     }
