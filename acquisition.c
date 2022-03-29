@@ -26,7 +26,7 @@ int extraction_mots(char* mots[], char* nom_fichier, int nb_lettres) //FONCTION 
     strcpy(chemin, "listes_mots/");
     strcat(chemin, nom_fichier);
 
-    printf("Chemin : %s\n", chemin);
+    //printf("Chemin : %s\n", chemin);
 
     FILE* fichier = fopen(chemin,"r");
     if (fichier == NULL) 
