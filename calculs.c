@@ -97,19 +97,24 @@ int* extraction_donnees(char* essai, int resultat[], char lst_lettres[], int lst
             strcat(lst_lettres_ban, temp_char);
         }
     }
-    printf
 }
 
 
 char** liste_mots_prob(char* mots_a_tester[], int nb_mots, char lst_lettres[], int lst_etats[], int lst_pos[])
 {
-    char* mots_prob[];
+    int taille_tableau = 10;
+    char* mots_prob[taille_tableau];
     int indice_mot_prob = 0;
     for (int i=0; i<nb_mots; i++)
     {
         char* mot_test = mots_a_tester[i];
         if (correspondance_ltr_jaune(char* mot_test, char lst_lettres[], int lst_etats[])==1 && correspondance_ltr_verte(char* mot_test, char lst_lettres[], int lst_etats[], int lst_pos[])==1 && test_ltr_ban(mot_test, lst_lettres_ban)==1)
         {
+            if (indice_mot_prob==taille_tableau) 
+            {
+                taille_tableau = 2*taille_tableau;
+                mots_prob = realloc(mots_prob, taille_tableau);
+            }
             mots_prob[indice_mot_prob] = mot_test;
             indice_mot_prob++;
         }
