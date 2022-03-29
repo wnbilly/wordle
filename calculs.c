@@ -82,24 +82,27 @@ int test_ltr_ban(char* mot_test, char* lst_lettres_ban)
 }
 
 //Remplit lst_lettres, lst_etats, lst_pos, lst_lettres_ban à partir d'essai et de resultat
-int extraction_donnees(char* essai, int resultat[], char lst_lettres[], int lst_etats[], int lst_pos[], char* lst_lettres_ban)
+void extraction_donnees(char* essai, int resultat[], char lst_lettres[], int lst_etats[], int lst_pos[], char* lst_lettres_ban)
 {
     int nb_lettres = strlen(essai);
-    int indice_donnees = strlen(lst_lettres);
-    for (int i=0; i<nb_lettres; i++)
-    {
-        if (resultat[i]!=0) 
-        {
-            lst_lettres[indice_donnees]=essai[i];
-            lst_etats[indice_donnees]=resultat[i];
-            lst_pos[indice_donnees]=i;
 
-        } else { //On bannit les lettres en gris
-            char temp_char[] = {essai[i]};
-            strcat(lst_lettres_ban, temp_char);
+    for (int i=0; i<nb_lettres; i++) //i indice resultat
+    {
+        for (int k=0; k<nb_lettres, k++) //k indice dans les donnees
+        {
+            if (resultat[i]!=0) 
+            {
+                lst_lettres[indice_donnees]=essai[i];
+                lst_etats[indice_donnees]=resultat[i];
+                lst_pos[indice_donnees]=i;
+
+            } else { //On bannit les lettres en gris
+                char temp_char[] = {essai[i]};
+                strcat(lst_lettres_ban, temp_char);
+            }
         }
     }
-    return 
+    return indice_donnees;
 }
 
 
@@ -121,14 +124,26 @@ int liste_mots_prob(char* mots_probables[], char* mots_a_tester[], int nb_mots, 
 
 int main(int argc, char* argv[])
 {
-    
+    char* essai = "porte";
+
     int nb_lettres = 5;
     
-    
-    char lst_lettres[];
-    int lst_etats[]; //Equivalent de resultat
-    int lst_pos[]; //Position des lettres vertes, vaut -1 si lettre jaune
-    char* lst_lettres_ban[];
+    //FAIRE STRUCT DONNEES
+
+    struct donnees{
+        int nb_lettres;
+        char lst_lettres[nb_lettres];
+        int lst_etats[nb_lettres];
+        int lst_pos[nb_lettres];
+        char* lst_lettres_ban[26];
+    }
+
+    char lst_lettres[nb_lettres]; //Contient les lettres présentes dans le mot
+    int lst_etats[nb_lettres]; //Donne les états (verts, jaunes) des lettres présentes dans le mot : 1(jaune) 2(vert) -1(non défini)
+
+    int lst_pos[nb_lettres]; //Position des lettres vertes, vaut -1 si lettre jaune
+    char* lst_lettres_ban[26];
+
     int nb_infos_ltr = extraction_donnees(essai, resultat, lst_lettres, lst_etats, lst_pos, lst_lettres_ban); //Nbr d'infos données par le résultat et le mot-essai
     
     char* nom_fichier = "liste_complete_triee.txt";
