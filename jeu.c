@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
 
     //ACQUISITION MOTS
     char* nom_fichier = "liste_complete_triee.txt";
-    int taille_test = 10000;
+    int taille_test = 6000;
     char* mots[taille_test];//=malloc(taille_test*sizeof(char*));
     int nb_mots = extraction_mots(mots, nom_fichier, nb_lettres);
     
