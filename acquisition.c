@@ -4,6 +4,7 @@
 #include <time.h>
 #include "acquisition.h"
 
+
 //Acquisition des mots de nb_lettres dans un dictionnaire + Choix aléatoire d'un mot
 // 4 <= nb_lettres <= 12
 
