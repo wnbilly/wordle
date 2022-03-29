@@ -80,7 +80,7 @@ int test_ltr_ban(char* mot_test, char* lst_lettres_ban)
     }
     return 1; //Le mot ne contient pas de lettre bannie
 }
-/*
+
 int* extraction_donnees(char* essai, int resultat[], char lst_lettres[], int lst_etats[], int lst_pos[], char* lst_lettres_ban)
 {
     int nb_lettres = strlen(essai);
@@ -99,39 +99,49 @@ int* extraction_donnees(char* essai, int resultat[], char lst_lettres[], int lst
     }
     printf
 }
-*/
-/*
+
+
 char** liste_mots_prob(char* mots_a_tester[], int nb_mots, char lst_lettres[], int lst_etats[], int lst_pos[])
 {
+    char* mots_prob[];
+    int indice_mot_prob = 0;
     for (int i=0; i<nb_mots; i++)
     {
         char* mot_test = mots_a_tester[i];
-        if (correspondance_ltr_jaune(char* mot_test, char lst_lettres[], int lst_etats[])==1 && correspondance_ltr_verte(char* mot_test, char lst_lettres[], int lst_etats[], int lst_pos[])==1)
-{
+        if (correspondance_ltr_jaune(char* mot_test, char lst_lettres[], int lst_etats[])==1 && correspondance_ltr_verte(char* mot_test, char lst_lettres[], int lst_etats[], int lst_pos[])==1 && test_ltr_ban(mot_test, lst_lettres_ban)==1)
+        {
+            mots_prob[indice_mot_prob] = mot_test;
+            indice_mot_prob++;
+        }
     }
+    return mots_prob;
 }
-*/
+
 
 int main(int argc, char* argv[])
 {
     
-    //int nb_lettres = 5;
-    /*
+    int nb_lettres = 5;
+    
     char lst_lettres[nb_infos_ltr];
     int lst_etats[nb_infos_ltr]; //Equivalent de resultat
     int lst_pos[nb_infos_ltr]; //Position des lettres vertes, vaut -1 si lettre jaune
-    */      
+
+    char* mots_probables[] = liste_mots_prob
+
+    /* TEST CORRES  
     char lst_lettres[] = {'a', 'o', 'h'};
     int lst_etats[] = {1, 1, 1, 1, 1}; //Equivalent de resultat dans les autres codes
     int lst_pos[] = {4, 1, 0, 3, 1};
     char lst_lettres_ban[] = {'t', 'b'};
     
-    //char* mot_cible = "porte";
+    char* mot_cible = "porte";
     char* mot_test = "aloha";
 
     printf("corres_verte : %d\n",correspondance_ltr_verte(mot_test, lst_lettres, lst_etats, lst_pos));
     printf("corres_jaune : %d\n",correspondance_ltr_jaune(mot_test, lst_lettres, lst_etats));
     printf("corres_ban: %d\n",test_ltr_ban(mot_test, lst_lettres_ban));
+    */
 
     return 0;
 }
