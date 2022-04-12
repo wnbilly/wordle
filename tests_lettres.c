@@ -96,7 +96,7 @@ void test_lettre(char* mot, char* essai, int resultat[], int nb_lettres)
     {
         for (int k=0; k<nb_lettres; k++) //indice du mot à deviner
         {
-            if (essai[i]==mot[k] && trace[i]==0 && resultat[i]!=2 && i!=k)
+            if (essai[i]==mot[k] && trace[i]==0 && resultat[k]!=2 && resultat[i]!=2)
             {
                 resultat[i]=1;
                 trace[i]=1;
