@@ -40,7 +40,7 @@ void reset_resultat(int resultat[], int nb_lettres)
 void affichage_gagne(int nb_essais)
 {
     printf_fond_vert();
-    printf("VOUS AVEZ GAGNE EN %d ESSAIS !\n", nb_essais);
+    printf("VOUS AVEZ GAGNE EN %d ESSAIS !\n", nb_essais+1);
     printf_standard();
 }
 
@@ -81,7 +81,7 @@ int main(int argc, char* argv[])
     //affichage_tableau_mots(mots, nb_mots);
 
     //INITIALISATION PARTIE
-    char* mot_cible = "terra"; //choix_mot(mots,nb_mots);
+    char* mot_cible = "lilas"; //choix_mot(mots,nb_mots);
 
     int* resultat = (int*) calloc(nb_lettres,sizeof(int));
     int nb_essais = 0;
@@ -103,7 +103,6 @@ int main(int argc, char* argv[])
         //On détecte les lettres à mettre en vert
         test_place(mot_cible,essai,resultat,nb_lettres);
 
-        affichage_resultat(essai, resultat, nb_lettres);
         //on détecte les lettres à mettre en jaune
         test_lettre(mot_cible,essai,resultat, nb_lettres);
 
