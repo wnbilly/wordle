@@ -3,7 +3,7 @@
 #include <string.h>
 #include "acquisition.h"
 #include "tests_lettres.h"
-#include "calculs.h"
+//#include "calculs.h"
 
 //Main du Wordle
 //Compile avec gcc -Wall -Werror -Wfatal-errors -o JEU jeu.c acquisition.c tests_lettres.c && ./JEU
@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
 
     //ACQUISITION MOTS
     char* nom_fichier = "liste_complete_triee.txt";
-    int taille_test = 10000;
+    int taille_test = 6000;
     char* mots[taille_test];//=malloc(taille_test*sizeof(char*));
     int nb_mots = extraction_mots(mots, nom_fichier, nb_lettres);
     
@@ -81,7 +81,7 @@ int main(int argc, char* argv[])
     //affichage_tableau_mots(mots, nb_mots);
 
     //INITIALISATION PARTIE
-    char* mot_cible = choix_mot(mots,nb_mots);
+    char* mot_cible = "terra"; //choix_mot(mots,nb_mots);
 
     int* resultat = (int*) calloc(nb_lettres,sizeof(int));
     int nb_essais = 0;
@@ -90,7 +90,7 @@ int main(int argc, char* argv[])
     for (nb_essais=0; nb_essais<max_essais; nb_essais++)
     {
         //Le joueur entre sa proposition
-        printf("Essai %d/%d. ", nb_essais, max_essais);
+        printf("Essai %d/%d. ", nb_essais+1, max_essais);
         acquisition_clavier(essai, nb_lettres);
 
         //On vérifie si le mot est dans la liste
@@ -102,6 +102,8 @@ int main(int argc, char* argv[])
 
         //On détecte les lettres à mettre en vert
         test_place(mot_cible,essai,resultat,nb_lettres);
+
+        affichage_resultat(essai, resultat, nb_lettres);
         //on détecte les lettres à mettre en jaune
         test_lettre(mot_cible,essai,resultat, nb_lettres);
 

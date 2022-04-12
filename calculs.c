@@ -81,58 +81,82 @@ int test_ltr_ban(char* mot_test, char* lst_lettres_ban)
     return 1; //Le mot ne contient pas de lettre bannie
 }
 
-int* extraction_donnees(char* essai, int resultat[], char lst_lettres[], int lst_etats[], int lst_pos[], char* lst_lettres_ban)
+//Remplit lst_lettres, lst_etats, lst_pos, lst_lettres_ban à partir d'essai et de resultat
+void extraction_donnees(char* essai, int resultat[], char lst_lettres[], int lst_etats[], int lst_pos[], char* lst_lettres_ban)
 {
     int nb_lettres = strlen(essai);
-    int indice_donnees = strlen(lst_lettres);
-    for (int i=0; i<nb_lettres; i++)
+
+    for (int i=0; i<nb_lettres; i++) //i indice resultat
     {
-        if (resultat[i]!=0) 
+        for (int k=0; k<nb_lettres, k++) //k indice dans les donnees
         {
-            lst_lettres[indice_donnees]=essai[i];
-            lst_etats[indice_donnees]=resultat[i];
-            lst_pos[indice_donnees]=i;
-        } else { //On bannit les lettres en gris
-            char temp_char[] = {essai[i]};
-            strcat(lst_lettres_ban, temp_char);
+            if (resultat[i]!=0) 
+            {
+                lst_lettres[indice_donnees]=essai[i];
+                lst_etats[indice_donnees]=resultat[i];
+                lst_pos[indice_donnees]=i;
+
+            } else { //On bannit les lettres en gris
+                char temp_char[] = {essai[i]};
+                strcat(lst_lettres_ban, temp_char);
+            }
         }
     }
+    return indice_donnees;
 }
 
 
-char** liste_mots_prob(char* mots_a_tester[], int nb_mots, char lst_lettres[], int lst_etats[], int lst_pos[])
+int liste_mots_prob(char* mots_probables[], char* mots_a_tester[], int nb_mots, char lst_lettres[], int lst_etats[], int lst_pos[], char lst_lettres_ban[])
 {
-    int taille_tableau = 10;
-    char* mots_prob[taille_tableau];
     int indice_mot_prob = 0;
     for (int i=0; i<nb_mots; i++)
     {
         char* mot_test = mots_a_tester[i];
-        if (correspondance_ltr_jaune(char* mot_test, char lst_lettres[], int lst_etats[])==1 && correspondance_ltr_verte(char* mot_test, char lst_lettres[], int lst_etats[], int lst_pos[])==1 && test_ltr_ban(mot_test, lst_lettres_ban)==1)
+        if (correspondance_ltr_jaune(mot_test, lst_lettres, lst_etats)==1 && correspondance_ltr_verte(mot_test, lst_lettres, lst_etats, lst_pos)==1 && test_ltr_ban(mot_test, lst_lettres_ban)==1)
         {
-            if (indice_mot_prob==taille_tableau) 
-            {
-                taille_tableau = 2*taille_tableau;
-                mots_prob = realloc(mots_prob, taille_tableau);
-            }
-            mots_prob[indice_mot_prob] = mot_test;
+            mots_probables[indice_mot_prob] = mot_test;
             indice_mot_prob++;
         }
     }
-    return mots_prob;
+    return indice_mot_prob-1;
 }
 
 
 int main(int argc, char* argv[])
 {
-    
+    char* essai = "porte";
+
     int nb_lettres = 5;
     
-    char lst_lettres[nb_infos_ltr];
-    int lst_etats[nb_infos_ltr]; //Equivalent de resultat
-    int lst_pos[nb_infos_ltr]; //Position des lettres vertes, vaut -1 si lettre jaune
+    //FAIRE STRUCT DONNEES
 
-    char* mots_probables[] = liste_mots_prob
+    struct donnees{
+        int nb_lettres;
+        char lst_lettres[nb_lettres];
+        int lst_etats[nb_lettres];
+        int lst_pos[nb_lettres];
+        char* lst_lettres_ban[26];
+    }
+
+    char lst_lettres[nb_lettres]; //Contient les lettres présentes dans le mot
+    int lst_etats[nb_lettres]; //Donne les états (verts, jaunes) des lettres présentes dans le mot : 1(jaune) 2(vert) -1(non défini)
+
+    int lst_pos[nb_lettres]; //Position des lettres vertes, vaut -1 si lettre jaune
+    char* lst_lettres_ban[26];
+
+    int nb_infos_ltr = extraction_donnees(essai, resultat, lst_lettres, lst_etats, lst_pos, lst_lettres_ban); //Nbr d'infos données par le résultat et le mot-essai
+    
+    char* nom_fichier = "liste_complete_triee.txt";
+
+    int taille_test = 6000;
+    char* mots[taille_test];
+    char* mots_probables[taille_test];
+
+    int nb_mots = extraction_mots(mots, nom_fichier, nb_lettres);
+
+    int nb_mots_probables = liste_mots_prob(mots_probables, mots, nb_mots, lst_lettres, lst_etats, lst_pos, lst_lettres_ban);
+
+    affichage_tableau_mots(mots_probables,nb_mots_probables);
 
     /* TEST CORRES  
     char lst_lettres[] = {'a', 'o', 'h'};
