@@ -3,6 +3,7 @@
 #include <string.h>
 #include "acquisition.h"
 #include "tests_lettres.h"
+#include "calculs.h"
 
 //Code permettant de calculer les probabilités etc
 
@@ -30,7 +31,7 @@ int nb_occurences(char* mot, char lettre) //Renvoie le nombre d'occurences de la
     return nb_occur;
 }
 
-int correspondance_ltr_jaune(char* mot_test, struct donnees *data)
+int correspondance_ltr_jaune(char* mot_test, struct donnees* data)
 {
     int nb_lettres = strlen(mot_test);
 
@@ -45,7 +46,7 @@ int correspondance_ltr_jaune(char* mot_test, struct donnees *data)
             nb_jaunes++; //
             for (int k=0; k<nb_lettres; k++)
             {
-                if (mot_test[k]==lst_lettres[i] && trace[k]==0)
+                if (mot_test[k]==data->lst_lettres[i] && trace[k]==0)
                 {
                     //printf("%c = %c | trace[%d] = %d\n",mot_test[k], lst_lettres[i], k, trace[k]);
                     trace[k] = 1;
@@ -82,7 +83,7 @@ int test_ltr_ban(char* mot_test, struct donnees* data)
     printf("%d lettres bannies\n", nb_lettres_ban);
     for (int i=0; i<nb_lettres_ban; i++)
     {
-        if (lettre_est_dans(mot_test, data->lst_lettres_ban[i])==1 && nb_occurences(mot_test, data->occ_ban[i])) 
+        if (lettre_est_dans(mot_test, data->lst_lettres_ban[i])==1 && nb_occurences(mot_test, data->lst_lettres_ban[i])>=data->occ_ban[i]) 
         {
             printf("%d occurences de %c dans le mot %s\n",data->occ_ban[i], data->lst_lettres_ban[i], mot_test);
             return 0; //Au moins une lettre bannie est dans le mot
@@ -99,7 +100,7 @@ void extraction_donnees(char* essai, int resultat[], struct donnees* data)
 
     for (int i=0; i<nb_lettres; i++) //i indice resultat
     {
-        for (int k=0; k<nb_lettres, k++) //k indice dans les donnees
+        for (int k=0; k<nb_lettres; k++) //k indice dans les donnees
         {
             if (resultat[i]!=0) 
             {
@@ -112,7 +113,7 @@ void extraction_donnees(char* essai, int resultat[], struct donnees* data)
             { //On bannit les lettres en gris
                 char temp_char[] = {essai[i]};
                 strcat(data->lst_lettres_ban, temp_char);
-                occ_ban[i]=nb_occurences(essai, essai[i])
+                data->occ_ban[i]=nb_occurences(essai, essai[i]);
             }
         }
     }
@@ -121,33 +122,32 @@ void extraction_donnees(char* essai, int resultat[], struct donnees* data)
 void affichage_donnees(struct donnees* data)
 {
     printf("LETTRES DANS MOT\n");
-    for (int i=0, i<data->nb_lettres, i++)
+    for (int i=0; i<(data->nb_lettres); i++)
     {
-        printf("%s ",data->lst_lettres[i]);
+        printf("%c ",data->lst_lettres[i]);
     }
     printf("ETATS LETTRES\n");
-    for (int i=0, i<data->nb_lettres, i++)
+    for (int i=0; i<data->nb_lettres; i++)
     {
         printf("%d ",data->lst_etats[i]);
     }
     printf("POSITIONS\n");
-    for (int i=0, i<data->nb_lettres, i++)
+    for (int i=0; i<data->nb_lettres; i++)
     {
-        printf("%s ",data->lst_pos[i]);
+        printf("%d ",data->lst_pos[i]);
     }
     printf("LETTRES BAN\n");
-    for (int i=0, i<data->nb_lettres, i++)
+    for (int i=0; i<data->nb_lettres; i++)
     {
-        printf("%s ",data->lst_lettres_ban[i]);
+        printf("%c ",data->lst_lettres_ban[i]);
     }
     printf("\n");
     printf("OCCURENCES POUR  BAN\n");
-    for (int i=0, i<data->nb_lettres, i++)
+    for (int i=0; i<data->nb_lettres; i++)
     {
-        printf("%s ",data->occ_ban[i]);
+        printf("%d ",data->occ_ban[i]);
     }
     printf("\n");
-
 }
 
 int liste_mots_prob(char* mots_probables[], char* mots_a_tester[], int nb_mots, struct donnees* data)
@@ -165,30 +165,74 @@ int liste_mots_prob(char* mots_probables[], char* mots_a_tester[], int nb_mots, 
     return indice_mot_prob-1;
 }
 
+int** creation_liste_patterns(int nb_lettres)
+{
+    int** liste_patterns = calloc(5*243, sizeof(int));
+    for (int n=0; n<243; n++)
+    {
+        for (int i=0; i<3; i++)
+        {
+            for (int j=0; j<3; j++)
+            {
+                for (int k=0; k<3; k++)
+                {
+                    for (int l=0; l<3; l++)
+                    {
+                        for (int m=0; m<3; m++)
+                        {
+                            liste_patterns[n][0] = i;
+                            liste_patterns[n][1] = j;
+                            liste_patterns[n][2] = k;
+                            liste_patterns[n][3] = l;
+                            liste_patterns[n][4] = m;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return liste_patterns;
+}
+
+/*
+int calcul_entropie(char* mot, int pattern[])
+{
+    int h = 0;
+    for (int i = 0; i<243; i++); 
+}
+*/
 
 int main(int argc, char* argv[])
 {
     char* essai = "porte";
-
-    int nb_lettres = 5;
     
     //FAIRE STRUCT DONNEES
 
-    struct donnees* data;
-
-    int nb_infos_ltr = extraction_donnees(essai, resultat, data); //Nbr d'infos données par le résultat et le mot-essai
+    struct donnees* data = malloc(sizeof(struct donnees));
     
+    data->nb_lettres = 5;
+    data->lst_lettres = malloc(data->nb_lettres*sizeof(char));
+    data->lst_etats = calloc(data->nb_lettres, sizeof(int));
+    data->lst_pos = malloc(data->nb_lettres*sizeof(int));
+    data->lst_pos[0] = -1;
+    data->lst_pos[1] = -1;
+    data->lst_pos[2] = -1;
+    data->lst_pos[3] = -1;
+    data->lst_pos[4] = -1;
+    //data->lst_lettres_ban = malloc(26*sizeof(char));
+    //data->occ_ban = calloc(data->nb_lettres, sizeof(int));
+
     char* nom_fichier = "liste_complete_triee.txt";
 
     int taille_test = 6000;
     char* mots[taille_test];
     char* mots_probables[taille_test];
 
-    int nb_mots = extraction_mots(mots, nom_fichier, nb_lettres);
+    int nb_mots = extraction_mots(mots, nom_fichier, data->nb_lettres);
 
-    int nb_mots_probables = liste_mots_prob(mots_probables, mots, nb_mots, lst_lettres, lst_etats, lst_pos, lst_lettres_ban);
+    int nb_mots_probables = liste_mots_prob(mots_probables, mots, nb_mots, data);
 
-    affichage_tableau_mots(mots_probables,nb_mots_probables);
+    //affichage_tableau_mots(mots_probables,nb_mots_probables);
 
     /* TEST CORRES  
     char lst_lettres[] = {'a', 'o', 'h'};
@@ -203,6 +247,6 @@ int main(int argc, char* argv[])
     printf("corres_jaune : %d\n",correspondance_ltr_jaune(mot_test, lst_lettres, lst_etats));
     printf("corres_ban: %d\n",test_ltr_ban(mot_test, lst_lettres_ban));
     */
-
+    
     return 0;
 }
