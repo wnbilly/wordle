@@ -19,6 +19,17 @@ int lettre_est_dans(char* mot, char lettre) //Renvoie 1 si la lettre est dans le
     return 0;
 }
 
+int nb_occurences(char* mot, char lettre) //Renvoie le nombre d'occurences de la lettre dans le mot
+{
+    int nb_lettres = strlen(mot);
+    int nb_occur = 0;
+    for (int i=0; i<nb_lettres; i++)
+    {
+        if (mot[i]==lettre) nb_occur++;
+    }
+    return nb_occur;
+}
+
 int correspondance_ltr_jaune(char* mot_test, struct donnees *data)
 {
     int nb_lettres = strlen(mot_test);
@@ -51,29 +62,29 @@ int correspondance_ltr_jaune(char* mot_test, struct donnees *data)
     else return 0;
 }
 
-int correspondance_ltr_verte(char* mot_test, char lst_lettres[], int lst_etats[], int lst_pos[])
+int correspondance_ltr_verte(char* mot_test, struct donnees* data)
 {
-    int nb_infos_ltr = strlen(lst_lettres);
+    int nb_infos_ltr = strlen(data->lst_lettres);
 
     for (int i=0; i<nb_infos_ltr; i++)
     {
-        if (lst_etats[i]==2) //Si c'est une lettre verte
+        if (data->lst_etats[i]==2) //Si c'est une lettre verte
         {
-            if (mot_test[lst_pos[i]]!=lst_lettres[i]) return 0;
+            if (mot_test[data->lst_pos[i]]!=data->lst_lettres[i]) return 0;
         }
     }
     return 1;
 }
 
-int test_ltr_ban(char* mot_test, char* lst_lettres_ban)
+int test_ltr_ban(char* mot_test, struct donnees* data)
 {
-    int nb_lettres_ban = strlen(lst_lettres_ban);
+    int nb_lettres_ban = strlen(data->lst_lettres_ban);
     printf("%d lettres bannies\n", nb_lettres_ban);
     for (int i=0; i<nb_lettres_ban; i++)
     {
-        if (lettre_est_dans(mot_test, lst_lettres_ban[i])==1) 
+        if (lettre_est_dans(mot_test, data->lst_lettres_ban[i])==1 && nb_occurences(mot_test, data->occ_ban[i])) 
         {
-            printf("%c est dans le mot %s\n", lst_lettres_ban[i], mot_test);
+            printf("%d occurences de %c dans le mot %s\n",data->occ_ban[i], data->lst_lettres_ban[i], mot_test);
             return 0; //Au moins une lettre bannie est dans le mot
         }
     }
@@ -84,6 +95,7 @@ int test_ltr_ban(char* mot_test, char* lst_lettres_ban)
 void extraction_donnees(char* essai, int resultat[], struct donnees* data)
 {
     int nb_lettres = strlen(essai);
+    int indice_ban = 0;
 
     for (int i=0; i<nb_lettres; i++) //i indice resultat
     {
@@ -95,9 +107,12 @@ void extraction_donnees(char* essai, int resultat[], struct donnees* data)
                 data->lst_etats[k]=resultat[i];
                 data->lst_pos[k]=i;
 
-            } else { //On bannit les lettres en gris
+            } 
+            else if(lettre_est_dans(data->lst_lettres, essai[i]) == 1) //On vérifie si la lettre est déjà dans les lettres vertes/jaunes
+            { //On bannit les lettres en gris
                 char temp_char[] = {essai[i]};
                 strcat(data->lst_lettres_ban, temp_char);
+                occ_ban[i]=nb_occurences(essai, essai[i])
             }
         }
     }
@@ -126,16 +141,22 @@ void affichage_donnees(struct donnees* data)
         printf("%s ",data->lst_lettres_ban[i]);
     }
     printf("\n");
+    printf("OCCURENCES POUR  BAN\n");
+    for (int i=0, i<data->nb_lettres, i++)
+    {
+        printf("%s ",data->occ_ban[i]);
+    }
+    printf("\n");
 
 }
 
-int liste_mots_prob(char* mots_probables[], char* mots_a_tester[], int nb_mots, char lst_lettres[], int lst_etats[], int lst_pos[], char lst_lettres_ban[])
+int liste_mots_prob(char* mots_probables[], char* mots_a_tester[], int nb_mots, struct donnees* data)
 {
     int indice_mot_prob = 0;
     for (int i=0; i<nb_mots; i++)
     {
         char* mot_test = mots_a_tester[i];
-        if (correspondance_ltr_jaune(mot_test, lst_lettres, lst_etats)==1 && correspondance_ltr_verte(mot_test, lst_lettres, lst_etats, lst_pos)==1 && test_ltr_ban(mot_test, lst_lettres_ban)==1)
+        if (correspondance_ltr_jaune(mot_test, data)==1 && correspondance_ltr_verte(mot_test, data)==1 && test_ltr_ban(mot_test, data)==1)
         {
             mots_probables[indice_mot_prob] = mot_test;
             indice_mot_prob++;
@@ -154,12 +175,6 @@ int main(int argc, char* argv[])
     //FAIRE STRUCT DONNEES
 
     struct donnees* data;
-
-    char lst_lettres[nb_lettres]; //Contient les lettres présentes dans le mot
-    int lst_etats[nb_lettres]; //Donne les états (verts, jaunes) des lettres présentes dans le mot : 1(jaune) 2(vert) -1(non défini)
-
-    int lst_pos[nb_lettres]; //Position des lettres vertes, vaut -1 si lettre jaune
-    char* lst_lettres_ban[26];
 
     int nb_infos_ltr = extraction_donnees(essai, resultat, data); //Nbr d'infos données par le résultat et le mot-essai
     

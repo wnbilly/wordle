@@ -6,7 +6,8 @@ struct donnees{
         char lst_lettres[nb_lettres];   //contient les lettres dans le mot
         int lst_etats[nb_lettres]; //2 si vert, 1 si jaune, 0 pas d'infos
         int lst_pos[nb_lettres];    //contient la position associée à la lettre dans lst_lettres au même indice
-        char lst_lettres_ban[26]; //26 car 26 lettres dans l'alphabet
+        char lst_lettres_ban[26]; //contient les lettres bannies
+        int occ_ban[26]; //nombre d'occurences à avoir pour écarter le mot (=mot non compatible)
     };
 
 int lettre_est_dans(char* mot, char lettre, int nb_lettres);
