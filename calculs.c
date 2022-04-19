@@ -150,6 +150,7 @@ void affichage_donnees(struct donnees* data)
     printf("\n");
 }
 
+//
 int liste_mots_prob(char* mots_probables[], char* mots_a_tester[], int nb_mots, struct donnees* data)
 {
     int indice_mot_prob = 0;
@@ -165,7 +166,7 @@ int liste_mots_prob(char* mots_probables[], char* mots_a_tester[], int nb_mots, 
     return indice_mot_prob-1;
 }
 
-int** creation_liste_patterns(int nb_lettres)
+int** creation_liste_patterns(int nb_lettres) //OU BASE 3
 {
     int** liste_patterns = calloc(5*243, sizeof(int));
     for (int n=0; n<243; n++)
@@ -194,13 +195,17 @@ int** creation_liste_patterns(int nb_lettres)
     return liste_patterns;
 }
 
-/*
-int calcul_entropie(char* mot, int pattern[])
+
+int calcul_entropie(char* mot, int** liste_patterns, int nb_mots)
 {
     int h = 0;
-    for (int i = 0; i<243; i++); 
+    int p = 0;
+    for (int i = 0; i<243; i++);
+        char* mots_probables[];
+        p = liste_mots_prob(mots_probables, mots_a_tester, nb_mots)
+
 }
-*/
+
 
 int main(int argc, char* argv[])
 {
