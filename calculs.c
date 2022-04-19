@@ -19,18 +19,17 @@ int lettre_est_dans(char* mot, char lettre) //Renvoie 1 si la lettre est dans le
     return 0;
 }
 
-int correspondance_ltr_jaune(char* mot_test, char lst_lettres[], int lst_etats[])
+int correspondance_ltr_jaune(char* mot_test, struct donnees *data)
 {
     int nb_lettres = strlen(mot_test);
-    int nb_infos_ltr = strlen(lst_lettres);
 
     int nb_jaunes = 0;
     int nb_corres = 0;
     int* trace = (int*) calloc(nb_lettres,sizeof(int)); //Pour se rappeler des lettres déjà détectées : 1 si déjà détectée, 0 sinon
 
-    for (int i=0; i<nb_infos_ltr; i++)
+    for (int i=0; i<nb_lettres; i++)
     {
-        if (lst_etats[i]==1) //Si c'est une lettre jaune
+        if (data->lst_etats[i]==1) //Si c'est une lettre jaune
         {
             nb_jaunes++; //
             for (int k=0; k<nb_lettres; k++)
@@ -82,7 +81,7 @@ int test_ltr_ban(char* mot_test, char* lst_lettres_ban)
 }
 
 //Remplit lst_lettres, lst_etats, lst_pos, lst_lettres_ban à partir d'essai et de resultat
-void extraction_donnees(char* essai, int resultat[], char lst_lettres[], int lst_etats[], int lst_pos[], char* lst_lettres_ban)
+void extraction_donnees(char* essai, int resultat[], struct donnees* data)
 {
     int nb_lettres = strlen(essai);
 
@@ -92,19 +91,43 @@ void extraction_donnees(char* essai, int resultat[], char lst_lettres[], int lst
         {
             if (resultat[i]!=0) 
             {
-                lst_lettres[indice_donnees]=essai[i];
-                lst_etats[indice_donnees]=resultat[i];
-                lst_pos[indice_donnees]=i;
+                data->lst_lettres[k]=essai[i];
+                data->lst_etats[k]=resultat[i];
+                data->lst_pos[k]=i;
 
             } else { //On bannit les lettres en gris
                 char temp_char[] = {essai[i]};
-                strcat(lst_lettres_ban, temp_char);
+                strcat(data->lst_lettres_ban, temp_char);
             }
         }
     }
-    return indice_donnees;
 }
 
+void affichage_donnees(struct donnees* data)
+{
+    printf("LETTRES DANS MOT\n");
+    for (int i=0, i<data->nb_lettres, i++)
+    {
+        printf("%s ",data->lst_lettres[i]);
+    }
+    printf("ETATS LETTRES\n");
+    for (int i=0, i<data->nb_lettres, i++)
+    {
+        printf("%d ",data->lst_etats[i]);
+    }
+    printf("POSITIONS\n");
+    for (int i=0, i<data->nb_lettres, i++)
+    {
+        printf("%s ",data->lst_pos[i]);
+    }
+    printf("LETTRES BAN\n");
+    for (int i=0, i<data->nb_lettres, i++)
+    {
+        printf("%s ",data->lst_lettres_ban[i]);
+    }
+    printf("\n");
+
+}
 
 int liste_mots_prob(char* mots_probables[], char* mots_a_tester[], int nb_mots, char lst_lettres[], int lst_etats[], int lst_pos[], char lst_lettres_ban[])
 {
@@ -130,13 +153,7 @@ int main(int argc, char* argv[])
     
     //FAIRE STRUCT DONNEES
 
-    struct donnees{
-        int nb_lettres;
-        char lst_lettres[nb_lettres];
-        int lst_etats[nb_lettres];
-        int lst_pos[nb_lettres];
-        char* lst_lettres_ban[26];
-    }
+    struct donnees* data;
 
     char lst_lettres[nb_lettres]; //Contient les lettres présentes dans le mot
     int lst_etats[nb_lettres]; //Donne les états (verts, jaunes) des lettres présentes dans le mot : 1(jaune) 2(vert) -1(non défini)
@@ -144,7 +161,7 @@ int main(int argc, char* argv[])
     int lst_pos[nb_lettres]; //Position des lettres vertes, vaut -1 si lettre jaune
     char* lst_lettres_ban[26];
 
-    int nb_infos_ltr = extraction_donnees(essai, resultat, lst_lettres, lst_etats, lst_pos, lst_lettres_ban); //Nbr d'infos données par le résultat et le mot-essai
+    int nb_infos_ltr = extraction_donnees(essai, resultat, data); //Nbr d'infos données par le résultat et le mot-essai
     
     char* nom_fichier = "liste_complete_triee.txt";
 
