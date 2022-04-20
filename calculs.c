@@ -166,6 +166,28 @@ int liste_mots_prob(char* mots_probables[], char* mots_a_tester[], int nb_mots, 
     return indice_mot_prob-1;
 }
 
+int nb_mots_prob(char* mot, int** liste_patterns, char* mots_a_tester[])
+{
+    int nb_prob = 0;
+    int nb_lettres = sizeof(mot)/sizeof(char);
+    int nb_mots_test = sizeof(mots_a_tester)/sizeof(mot);
+    for (int i=0; i<nb_mots_test; i++)
+    {
+        char* mot_test = mots_a_tester[i];
+        for (int p =0; p<243; p++)
+        {
+            struct donnees* data;
+            extraction_donnees(mot_test, liste_patterns[p], data);
+            if (correspondance_ltr_jaune(mot_test, data)==1 && correspondance_ltr_verte(mot_test, data)==1 && test_ltr_ban(mot_test, data)==1)
+            {
+                nb_prob++;
+            }
+        }
+    }
+    return nb_prob;
+}
+
+
 int** creation_liste_patterns(int nb_lettres) //OU BASE 3
 {
     int** liste_patterns = calloc(5*243, sizeof(int));
