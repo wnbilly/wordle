@@ -8,6 +8,8 @@
 
 //Code permettant de calculer les probabilités etc
 
+//gcc -Wall -Werror -Wfatal-errors -o CALCULS calculs.c acquisition.c tests_lettres.c -lm && ./CALCULS
+
 //Liste des lettres dans la réponse => char lst_ltr[nb_lettres]
 //Liste de leurs etats : 0 si pas dans le mot, 1 si dans le mot à la mauvaise place, 2 si dans le mot à la bonne place
 
@@ -217,28 +219,27 @@ int** creation_liste_patterns(int nb_lettres) //OU BASE 3
 }
 
 
-int calcul_entropie_mot(char* mot, int nb_mots, char* mots_a_tester[])
+float calcul_entropie_mot(char* mot, int nb_mots, char* mots_a_tester[])
 {
     int nb_lettres = 5;
     int** liste_patterns = creation_liste_patterns(nb_lettres);
-    int h = 0;
-    int p = 0;
-    int j;
-    for (j = 0; j<243; j++);
+    float h = 0;
+    float p = 0;
+    for (int j = 0; j<243; j++)
     {
-        int pattern[] = liste_patterns[j];
+        int* pattern = liste_patterns[j];
         p = nombre_mots_prob(mot, pattern, mots_a_tester, nb_mots)/nb_mots;
         h = h+p*log(p);
     }
+    return h;
 }
 
-int trouver_mot_h_max(char* mots_a_tester[], struct donnees* data, char mot_h_max[])
+int trouver_mot_h_max(char* mots_a_tester[], int nb_mots_a_tester, struct donnees* data, char mot_h_max[])
 {
-    int nb_mots_a_tester = sizeof(mots_a_tester)/sizeof(mots_a_tester[0]);
-    int h_max = 0;
+    float h_max = 0;
     for (int k=0; k<nb_mots_a_tester; k++)
     {
-        int h_temp = calcul_entropie_mot(mots_a_tester[k],nb_mots_a_tester, mots_a_tester);
+        float h_temp = calcul_entropie_mot(mots_a_tester[k],nb_mots_a_tester, mots_a_tester);
         if (h_temp>h_max)
         {
             h_max = h_temp;
@@ -278,11 +279,13 @@ int main(int argc, char* argv[])
 
     int nb_mots = extraction_mots(mots, nom_fichier, data->nb_lettres);
 
-    trouver_mot_h_max(mots, data, mot_h_max);
+    trouver_mot_h_max(mots, nb_mots_test, data, mot_h_max);
 
-    print("mot_hç_max est %s", mot_h_max);
+    printf("mot_hç_max est %s", mot_h_max);
 
     int nb_mots_probables = liste_mots_prob(mots_probables, mots, nb_mots, data);
+
+    printf("nb_mots_probables : %d", nb_mots_probables);
 
     //affichage_tableau_mots(mots_probables,nb_mots_probables);
 
