@@ -103,26 +103,34 @@ int test_ltr_ban(char* mot_test, struct donnees* data)
 //Remplit lst_lettres, lst_etats, lst_pos, lst_lettres_ban à partir d'essai et de resultat
 void extraction_donnees(char* essai, int resultat[], struct donnees* data)
 {
-    int nb_lettres = strlen(essai);
+    int nb_lettres = 5;
     //int indice_ban = 0;
-
+    int j = 0; //indice de remplissage de data
+    int j_ban = 0; //indice de remplissage de ban
     for (int i=0; i<nb_lettres; i++) //i indice resultat
     {
-        for (int k=0; k<nb_lettres; k++) //k indice dans les donnees
+         //k indice dans les donnees
+        if (resultat[i]!=0) //Si resultat indique que la i_eme lettre de essai est jaune ou verte
         {
-            if (resultat[i]!=0) //Si resultat indique que la i_eme lettre de essai est jaune ou verte
-            {
-                data->lst_lettres[k]=essai[i];
-                data->lst_etats[k]=resultat[i];
-                data->lst_pos[k]=i;
-                break;
-
-            } //Si la i_eme lettre est grise
-            else if(lettre_est_dans(data->lst_lettres, essai[i]) == 1) //On vérifie si la lettre est déjà dans les lettres vertes/jaunes
+            data->lst_lettres[j]=essai[i];
+            data->lst_etats[j]=resultat[i];
+            data->lst_pos[j]=i;
+            j++;
+        } //Si la i_eme lettre est grise
+        else 
+        {
+            if(lettre_est_dans(data->lst_lettres, essai[i]) == 1 && lettre_est_dans(data->lst_lettres_ban, essai[i]) == 0) //On vérifie si la lettre est déjà dans les lettres vertes/jaunes
             { //On bannit les lettres en gris
+                data->lst_lettres_ban[j_ban]=essai[i];
+                data->occ_ban[j_ban]=nb_occurences(essai, essai[i]);
+                j_ban++;
+            }
+            else if(lettre_est_dans(data->lst_lettres, essai[i]) == 0 && lettre_est_dans(data->lst_lettres_ban, essai[i]) == 0)
+            {
                 char temp_char[] = {essai[i]};
                 strcat(data->lst_lettres_ban, temp_char);
-                data->occ_ban[i]=nb_occurences(essai, essai[i]);
+                data->occ_ban[j_ban]=1;
+                j_ban++;
             }
         }
     }
@@ -156,7 +164,6 @@ void affichage_donnees(struct donnees* data)
     }
     printf("\n");
     printf("LETTRES BAN\n");
-    
     
     for (int i=0; i<data->nb_lettres; i++)
     {
@@ -199,7 +206,7 @@ int main(int argc, char* argv[])
     //char* mot_cible = "porte";
     //char* mot_test = "aloha";
 
-    char* essai = "porte";
+    char* essai = "aloha";
     int resultat[5] = {0,1,0,2,0};
 
     affichage_resultat(essai, resultat, 5);
