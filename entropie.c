@@ -45,10 +45,11 @@ int nombre_mots_prob(char* mots_a_tester[], int nb_mots_a_tester, struct donnees
 }
 
 
-float calcul_entropie_mot(char* mot, char* mots_a_tester[], int nb_mots_a_tester)
+float calcul_entropie_mot(char* mot, char* mots_a_tester[], int nb_mots_a_tester) //FIX NB DE MOTS A TESTER
 {
     int nb_lettres = 5;
-    int* liste_patterns[243];
+    int** liste_patterns;
+    init_matrix(&liste_patterns, 243, 5);
     creation_liste_patterns(nb_lettres, liste_patterns);
     float h = 0;
     float p = 0;
@@ -56,13 +57,25 @@ float calcul_entropie_mot(char* mot, char* mots_a_tester[], int nb_mots_a_tester
     for (int j = 0; j<243; j++)
     {
         struct donnees* data = init_data();
-        printf("ETAPE CALCUL_H %d\n", j);
         extraction_donnees(mot, liste_patterns[j], data);
-        p = nombre_mots_prob(mots_a_tester, nb_mots_a_tester, data)/nb_mots_a_tester;
-        h = h+p*log(p);
+        p = nombre_mots_prob(mots_a_tester, nb_mots_a_tester, data);
+        printf("p = %f\n",p);
+        if (p!=0) h = h+p*log(p);
         free(data);
     }
+    printf("H(%s) = %f\n",mot,h);
     return h;
+}
+
+
+void init_matrix(int ***matrix, int n, int p) //Pour l'utiliser, on initialise int** maxtrix;
+{
+    *matrix = malloc(sizeof(int *) * n);
+
+    for (int i = 0; i < n; i++)
+    {
+        *(*matrix + i) = malloc(sizeof(int) * p);
+    }
 }
 
 float trouver_mot_h_max(char* mots_a_tester[], int nb_mots_a_tester, char mot_h_max[])
@@ -75,7 +88,6 @@ float trouver_mot_h_max(char* mots_a_tester[], int nb_mots_a_tester, char mot_h_
         {
             h_max = h_temp;
             mot_h_max = mots_a_tester[k];
-               printf("ETAPE H_MAX %d\n", k);
         }
     }
     return h_max;
@@ -83,11 +95,9 @@ float trouver_mot_h_max(char* mots_a_tester[], int nb_mots_a_tester, char mot_h_
 
 void creation_liste_patterns(int nb_lettres, int* liste_patterns[]) //OU BASE 3
 {
-    printf("DEBUT PATTERNS\n");
-    printf("DEBUT PATTERNS\n");
     for (int n=0; n<243; n++)
     {
-        printf("pattern %d :\n",n);
+        //printf("pattern %d :\n",n+1);
         for (int i=0; i<3; i++)
         {
             for (int j=0; j<3; j++)
