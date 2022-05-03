@@ -22,5 +22,11 @@ int test_ltr_ban(char* mot_test, struct donnees* data);
 
 void extraction_donnees(char* essai, int resultat[], struct donnees* data);
 
+int verif_compatibilite(char* mot_test, struct donnees* data);
+
+void affichage_donnees(struct donnees* data);
+
+struct donnees* init_data();
+
 
 #endif //CALCULS_H

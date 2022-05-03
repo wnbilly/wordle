@@ -63,7 +63,7 @@ int correspondance_ltr_jaune(char* mot_test, struct donnees* data)
         }
     }
 
-    printf("%d corres sur %d jaunes --> ", nb_corres, nb_jaunes);
+    //printf("%d corres sur %d jaunes --> ", nb_corres, nb_jaunes);
 
     if (nb_corres == nb_jaunes) return 1;
     else return 0;
@@ -88,12 +88,12 @@ int correspondance_ltr_verte(char* mot_test, struct donnees* data)
 int test_ltr_ban(char* mot_test, struct donnees* data)
 {
     int nb_lettres_ban = strlen(data->lst_lettres_ban);
-    printf("%d lettres bannies\n", nb_lettres_ban);
+    //printf("%d lettres bannies\n", nb_lettres_ban);
     for (int i=0; i<nb_lettres_ban; i++)
     {
         if (lettre_est_dans(mot_test, data->lst_lettres_ban[i])==1 && nb_occurences(mot_test, data->lst_lettres_ban[i])>=data->occ_ban[i]) 
         {
-            printf("%d occurences de %c dans le mot %s\n",data->occ_ban[i], data->lst_lettres_ban[i], mot_test);
+            //printf("%d occurences de %c dans le mot %s\n",data->occ_ban[i], data->lst_lettres_ban[i], mot_test);
             return 0; //Au moins une lettre bannie est dans le mot
         }
     }
@@ -136,6 +136,14 @@ void extraction_donnees(char* essai, int resultat[], struct donnees* data)
     }
 }
 
+
+int verif_compatibilite(char* mot_test, struct donnees* data)
+{
+
+    if (correspondance_ltr_jaune(mot_test, data)==1 && correspondance_ltr_verte(mot_test, data)==1 && test_ltr_ban(mot_test, data)==1) return 1;
+    else return 0;
+}
+
 //Affiche le contenu de data
 void affichage_donnees(struct donnees* data)
 {
@@ -173,11 +181,8 @@ void affichage_donnees(struct donnees* data)
     printf("\n");
 }
 
-
-int main(int argc, char* argv[])
+struct donnees* init_data()
 {
-    //FAIRE STRUCT DONNEES
-
     struct donnees* data = malloc(sizeof(struct donnees));
     
     data->nb_lettres = 5;
@@ -189,8 +194,17 @@ int main(int argc, char* argv[])
     data->lst_pos[2] = -1;
     data->lst_pos[3] = -1;
     data->lst_pos[4] = -1;
+    
     //data->lst_lettres_ban = malloc(26*sizeof(char));
     //data->occ_ban = calloc(data->nb_lettres, sizeof(int));
+    return data;
+}
+
+int maineu(int argc, char* argv[])
+{
+    //FAIRE STRUCT DONNEES
+
+    struct donnees* data = init_data();
 
 
     //affichage_tableau_mots(mots_probables,nb_mots_probables);
