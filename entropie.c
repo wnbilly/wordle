@@ -45,25 +45,26 @@ int nombre_mots_prob(char* mots_a_tester[], int nb_mots_a_tester, struct donnees
 }
 
 
-float calcul_entropie_mot(char* mot, char* mots_a_tester[], int nb_mots_a_tester) //FIX NB DE MOTS A TESTER
+float calcul_entropie_mot(char* mot, char* mots_a_tester[], int nb_mots_a_tester, int** liste_patterns) //FIX NB DE MOTS A TESTER
 {
-    int nb_lettres = 5;
-    int** liste_patterns;
-    init_matrix(&liste_patterns, 243, 5);
-    creation_liste_patterns(nb_lettres, liste_patterns);
+    //int nb_lettres = 5;
+    
     float h = 0;
     float p = 0;
 
     for (int j = 0; j<243; j++)
     {
         struct donnees* data = init_data();
+        //affichage_debug(liste_patterns[j],5);
         extraction_donnees(mot, liste_patterns[j], data);
-        p = nombre_mots_prob(mots_a_tester, nb_mots_a_tester, data);
-        printf("p = %f\n",p);
-        if (p!=0) h = h+p*log(p);
+        //printf("%s\n",mot);
+        //printf("nb_mots_probables : %d\n", nombre_mots_prob(mots_a_tester, nb_mots_a_tester, data));
+        p = ((float) nombre_mots_prob(mots_a_tester, nb_mots_a_tester, data)+1)/nb_mots_a_tester;
+        //printf("p = %f\n",p);
+        if (p!=0) h = h-p*log(p);
         free(data);
     }
-    printf("H(%s) = %f\n",mot,h);
+    printf("H(%s) = %f\n", mot, h);
     return h;
 }
 
@@ -78,12 +79,12 @@ void init_matrix(int ***matrix, int n, int p) //Pour l'utiliser, on initialise i
     }
 }
 
-float trouver_mot_h_max(char* mots_a_tester[], int nb_mots_a_tester, char mot_h_max[])
+float trouver_mot_h_max(char* mots_a_tester[], int nb_mots_a_tester, char mot_h_max[], int** liste_patterns)
 {
     float h_max = 0;
     for (int k=0; k<nb_mots_a_tester; k++)
     {
-        float h_temp = calcul_entropie_mot(mots_a_tester[k], mots_a_tester, nb_mots_a_tester);
+        float h_temp = calcul_entropie_mot(mots_a_tester[k], mots_a_tester, nb_mots_a_tester, liste_patterns);
         if (h_temp>h_max)
         {
             h_max = h_temp;
@@ -93,9 +94,9 @@ float trouver_mot_h_max(char* mots_a_tester[], int nb_mots_a_tester, char mot_h_
     return h_max;
 }
 
-void creation_liste_patterns(int nb_lettres, int* liste_patterns[]) //OU BASE 3
+void creation_liste_patterns(int nb_lettres, int** liste_patterns) //OU BASE 3
 {
-    for (int n=0; n<243; n++)
+    for (int n=0; n<243;)
     {
         //printf("pattern %d :\n",n+1);
         for (int i=0; i<3; i++)
@@ -113,12 +114,24 @@ void creation_liste_patterns(int nb_lettres, int* liste_patterns[]) //OU BASE 3
                             liste_patterns[n][2] = k;
                             liste_patterns[n][3] = l;
                             liste_patterns[n][4] = m;
+                            n++;
+                            //affichage_debug(liste_patterns[n],5);
                         }
                     }
                 }
             }
         }
     }
+}
+
+void affichage_liste_patterns(int **liste_patterns)
+{
+    printf("=============\n");
+    for (int i=0; i<243; i++)
+    {
+        affichage_debug(liste_patterns[i], 5);
+    }
+    printf("=============\n");
 }
 
 int main(int argc, char* argv[])
@@ -147,8 +160,12 @@ int main(int argc, char* argv[])
 
     int nb_mots_a_tester = extraction_mots(mots_a_tester, nom_fichier, data->nb_lettres);
 
-    char* essai = "alota";
+    char* essai = choix_mot(mots_a_tester, nb_mots_a_tester);
     int resultat[5] = {0,1,0,2,0};
+
+    int** liste_patterns;
+    init_matrix(&liste_patterns, 243, 5);
+    creation_liste_patterns(data->nb_lettres, liste_patterns);
 
     affichage_resultat(essai, resultat, 5);
 
@@ -161,14 +178,16 @@ int main(int argc, char* argv[])
     printf("nb_mots_probables : %d\n", nb_mots_probables+1);
 
     
-
-    affichage_tableau_mots(mots_probables, nb_mots_probables);
-
+    //affichage_tableau_mots(mots_probables, nb_mots_probables);
+    
     char mot_h_max[5];
 
-    float h_max = trouver_mot_h_max(mots_a_tester, nb_mots_a_tester, mot_h_max);
+    float h_max = trouver_mot_h_max(mots_a_tester, nb_mots_a_tester, mot_h_max, liste_patterns);
 
     printf("Mot entropie max est %s avec %f\n", mot_h_max, h_max);
+    
+
+    free(*liste_patterns);
 
     return 0;
 }

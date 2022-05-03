@@ -84,6 +84,7 @@ int correspondance_ltr_verte(char* mot_test, struct donnees* data)
     return 1;
 }
 
+
 //Vérifie si le mot_test contient les lettres bannies contenues dans data
 int test_ltr_ban(char* mot_test, struct donnees* data)
 {
