@@ -105,6 +105,17 @@ int trouver_mot_h_max(char* mots_a_tester[], int nb_mots_a_tester, struct donnee
     return h_max;
 }
 
+int verif_compatibilite(struct donnees* data, char* mot_test){
+
+    if (correspondance_ltr_jaune(mot_test, data)==1 && correspondance_ltr_verte(mot_test, data)==1 && est_ltr_ban(mot_test, data)==1) { 
+        return 1;
+    }
+
+    return 0;
+}
+
+
+
 
 int main(int argc, char* argv[])
 {
