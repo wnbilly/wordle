@@ -82,6 +82,10 @@ float calcul_entropie_mot(char* mot, char* mots_a_tester[], int nb_mots_a_tester
 
 //Observations : certains mot (comme tarie) ont la même entropie lors des runs 3 4 5 : H(tarie) = 7.857382
 
+//après modif de extracion_donnees
+//aeree 9.244666 sans free_data log6.log, H(tarie) = 7.857382
+//aeree 9.244666 sans free_data log7.log, H(tarie) = 7.857382
+
 void init_matrix(int ***matrix, int n, int p) //Pour l'utiliser, on initialise int** maxtrix;
 {
     *matrix = malloc(sizeof(int *) * n);

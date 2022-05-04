@@ -37,6 +37,32 @@ int nb_occurences(char* mot, char lettre) //Renvoie le nombre d'occurences de la
     return nb_occur;
 }
 
+int nb_occurences_ban(char* essai, int* resultat, char lettre)
+{
+    int nb_lettres = sizeof(essai);
+    int nb_occ_ban = 0;
+
+    for (int i = 0; i<nb_lettres; i++)
+    {
+        if (essai[i]==lettre && resultat[i]==0) nb_occ_ban++;
+
+    }
+    return nb_occ_ban;
+}
+
+//Incrémente de 1 la valeur aassociée à la lettre
+void increment_par_valeur(int* lst_lettres_ban, int* occ_ban, int nb_lettres, char lettre)
+{
+    for (int i = 0; i<nb_lettres; i++)
+    {
+        if (lst_lettres_ban[i]==lettre)
+        {
+            occ_ban[i]++;
+            break;
+        }
+    }
+}
+
 //Vérifie si les lettres jaunes contenues dans data correspondent au mot_test
 int correspondance_ltr_jaune(char* mot_test, struct donnees* data)
 {
@@ -102,7 +128,8 @@ int test_ltr_ban(char* mot_test, struct donnees* data)
     return 1; //Le mot ne contient pas de lettre bannie
 }
 
-//Remplit lst_lettres, lst_etats, lst_pos, lst_lettres_ban à partir d'essai et de resultat
+//A FIX
+//Reset data et remplit lst_lettres, lst_etats, lst_pos, lst_lettres_ban à partir d'essai et de resultat
 void extraction_donnees(char* essai, int resultat[], struct donnees* data)
 {
     int nb_lettres = 5;
@@ -121,17 +148,10 @@ void extraction_donnees(char* essai, int resultat[], struct donnees* data)
         } //Si la i_eme lettre est grise
         else 
         {
-            if(lettre_est_dans(data->lst_lettres, essai[i]) == 1 && lettre_est_dans(data->lst_lettres_ban, essai[i]) == 0) //On vérifie si la lettre est déjà dans les lettres vertes/jaunes
+            if(lettre_est_dans(data->lst_lettres_ban, essai[i]) == 0) //On vérifie si la lettre est déjà dans les lettres vertes/jaunes
             { //On bannit les lettres en gris
                 data->lst_lettres_ban[j_ban]=essai[i];
-                data->occ_ban[j_ban]=nb_occurences(essai, essai[i]);
-                j_ban++;
-            }
-            else if(lettre_est_dans(data->lst_lettres, essai[i]) == 0 && lettre_est_dans(data->lst_lettres_ban, essai[i]) == 0)
-            {
-                char temp_char[] = {essai[i]};
-                strcat(data->lst_lettres_ban, temp_char);
-                data->occ_ban[j_ban]=1;
+                data->occ_ban[j_ban]=nb_occurences_ban(essai ,resultat, essai[i]);
                 j_ban++;
             }
         }
@@ -172,7 +192,6 @@ void affichage_donnees(struct donnees* data)
     {
         printf("%c ",data->lst_lettres_ban[i]);
     }
-    printf("\n");
     printf("LETTRES BAN\n");
     
     for (int i=0; i<data->nb_lettres; i++)
@@ -191,6 +210,11 @@ struct donnees* init_data()
     data->lst_lettres = malloc(data->nb_lettres*sizeof(char));
     data->lst_etats = calloc(data->nb_lettres, sizeof(int));
     data->lst_pos = malloc(data->nb_lettres*sizeof(int));
+    data->lst_etats[0] = -1;
+    data->lst_etats[1] = -1;
+    data->lst_etats[2] = -1;
+    data->lst_etats[3] = -1;
+    data->lst_etats[4] = -1;
     data->lst_pos[0] = -1;
     data->lst_pos[1] = -1;
     data->lst_pos[2] = -1;
@@ -227,8 +251,8 @@ int maineu(int argc, char* argv[])
     //char* mot_cible = "porte";
     //char* mot_test = "aloha";
 
-    char* essai = "aloha";
-    int resultat[5] = {0,1,0,2,0};
+    char* essai = "alaha";
+    int resultat[5] = {0,1,0,2,1};
 
     affichage_resultat(essai, resultat, 5);
 

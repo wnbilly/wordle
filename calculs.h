@@ -14,6 +14,8 @@ int lettre_est_dans(char* mot, char lettre);
 
 int nb_occurences(char* mot, char lettre);
 
+int nb_occurences_ban(char* essai, int* resultat, char lettre);
+
 int correspondance_ltr_jaune(char* mot_test, struct donnees* data);
 
 int correspondance_ltr_verte(char* mot_test, struct donnees* data);
