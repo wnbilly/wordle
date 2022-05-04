@@ -28,5 +28,7 @@ void affichage_donnees(struct donnees* data);
 
 struct donnees* init_data();
 
+void free_data(struct donnees* data);
+
 
 #endif //CALCULS_H

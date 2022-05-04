@@ -57,17 +57,30 @@ float calcul_entropie_mot(char* mot, char* mots_a_tester[], int nb_mots_a_tester
         struct donnees* data = init_data();
         //affichage_debug(liste_patterns[j],5);
         extraction_donnees(mot, liste_patterns[j], data);
+        //affichage_donnees(data);
         //printf("%s\n",mot);
         //printf("nb_mots_probables : %d\n", nombre_mots_prob(mots_a_tester, nb_mots_a_tester, data));
         p = ((float) nombre_mots_prob(mots_a_tester, nb_mots_a_tester, data)+1)/nb_mots_a_tester;
         //printf("p = %f\n",p);
         if (p!=0) h = h-p*log(p);
-        free(data);
+        //free_data(data);
     }
     printf("H(%s) = %f\n", mot, h);
     return h;
 }
 
+//gedit --encoding=UTF-8 file.txt
+
+//roula 4.324048 avec free_data(data) mis
+//racla 3.489402 avec free_data log.log
+//renee 9.136898 sans free_data log1.log
+//perte 10.589965 sans free_data log2.log
+
+//aeree 9.114610 sans free_data log3.log
+//renee 9.346533 sans free_data log4.log
+//renee 9.244974 sans free_data log5.log avec aeree à 9.098337
+
+//Observations : certains mot (comme tarie) ont la même entropie lors des runs 3 4 5 : H(tarie) = 7.857382
 
 void init_matrix(int ***matrix, int n, int p) //Pour l'utiliser, on initialise int** maxtrix;
 {
@@ -79,16 +92,20 @@ void init_matrix(int ***matrix, int n, int p) //Pour l'utiliser, on initialise i
     }
 }
 
+//TO DO void free_matrix
+
 float trouver_mot_h_max(char* mots_a_tester[], int nb_mots_a_tester, char mot_h_max[], int** liste_patterns)
 {
     float h_max = 0;
     for (int k=0; k<nb_mots_a_tester; k++)
     {
+        printf("%d : ",k);
         float h_temp = calcul_entropie_mot(mots_a_tester[k], mots_a_tester, nb_mots_a_tester, liste_patterns);
         if (h_temp>h_max)
         {
             h_max = h_temp;
             mot_h_max = mots_a_tester[k];
+            printf("%s nv max : %f\n",mot_h_max, h_max);
         }
     }
     return h_max;
@@ -138,35 +155,21 @@ int main(int argc, char* argv[])
 {
     //FAIRE STRUCT DONNEES
 
-    struct donnees* data = malloc(sizeof(struct donnees));
+    //struct donnees* data = init_data();
     
-    data->nb_lettres = 5;
-    data->lst_lettres = malloc(data->nb_lettres*sizeof(char));
-    data->lst_etats = calloc(data->nb_lettres, sizeof(int));
-    data->lst_pos = malloc(data->nb_lettres*sizeof(int));
-    data->lst_pos[0] = -1;
-    data->lst_pos[1] = -1;
-    data->lst_pos[2] = -1;
-    data->lst_pos[3] = -1;
-    data->lst_pos[4] = -1;
-    //data->lst_lettres_ban = malloc(26*sizeof(char));
-    //data->occ_ban = calloc(data->nb_lettres, sizeof(int));
-
     char* nom_fichier = "liste_complete_triee.txt";
 
     int taille_test = 7000;
     char* mots_a_tester[taille_test];
-    char* mots_probables[taille_test];
+    //char* mots_probables[taille_test];
 
-    int nb_mots_a_tester = extraction_mots(mots_a_tester, nom_fichier, data->nb_lettres);
-
-    char* essai = choix_mot(mots_a_tester, nb_mots_a_tester);
-    int resultat[5] = {0,1,0,2,0};
+    int nb_mots_a_tester = extraction_mots(mots_a_tester, nom_fichier, 5);
 
     int** liste_patterns;
     init_matrix(&liste_patterns, 243, 5);
-    creation_liste_patterns(data->nb_lettres, liste_patterns);
+    creation_liste_patterns(5, liste_patterns);
 
+    /* TEST extraction_donnees + nombre_mots_prob
     affichage_resultat(essai, resultat, 5);
 
     extraction_donnees(essai, resultat, data);
@@ -177,7 +180,8 @@ int main(int argc, char* argv[])
 
     printf("nb_mots_probables : %d\n", nb_mots_probables+1);
 
-    
+    */
+
     //affichage_tableau_mots(mots_probables, nb_mots_probables);
     
     char mot_h_max[5];

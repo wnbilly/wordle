@@ -11,7 +11,8 @@
 //gcc -Wall -Werror -Wfatal-errors -o CALCULS calculs.c acquisition.c tests_lettres.c -lm && ./CALCULS
 
 //Liste des lettres dans la réponse => char lst_ltr[nb_lettres]
-//Liste de leurs etats : 0 si pas dans le mot, 1 si dans le mot à la mauvaise place, 2 si dans le mot à la bonne place
+//Liste de leurs etats : -1 si on ne sait pas, 0 si pas dans le mot, 1 si dans le mot à la mauvaise place, 2 si dans le mot à la bonne place
+
 
 //Retourne 1 si la lettre est dans le mot, 0 sinon
 int lettre_est_dans(char* mot, char lettre) //Renvoie 1 si la lettre est dans le mot, 0 sinon
@@ -62,7 +63,7 @@ int correspondance_ltr_jaune(char* mot_test, struct donnees* data)
             }
         }
     }
-
+    free(trace);
     //printf("%d corres sur %d jaunes --> ", nb_corres, nb_jaunes);
 
     if (nb_corres == nb_jaunes) return 1;
@@ -195,10 +196,15 @@ struct donnees* init_data()
     data->lst_pos[2] = -1;
     data->lst_pos[3] = -1;
     data->lst_pos[4] = -1;
-    
-    //data->lst_lettres_ban = malloc(26*sizeof(char));
-    //data->occ_ban = calloc(data->nb_lettres, sizeof(int));
     return data;
+}
+
+void free_data(struct donnees* data)
+{
+    free(data->lst_lettres);
+    free(data->lst_etats);
+    free(data->lst_pos);
+    free(data);
 }
 
 int maineu(int argc, char* argv[])
