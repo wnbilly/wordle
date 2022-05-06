@@ -62,7 +62,7 @@ float calcul_entropie_mot(char* mot, char* mots_a_tester[], int nb_mots_a_tester
         //printf("nb_mots_probables : %d\n", nombre_mots_prob(mots_a_tester, nb_mots_a_tester, data));
         p = ((float) nombre_mots_prob(mots_a_tester, nb_mots_a_tester, data)+1)/nb_mots_a_tester;
         //printf("p = %f\n",p);
-        if (p!=0) h = h-p*log(p);
+        if (p!=0) h = h-p*log2f(p);
         //free_data(data);
     }
     printf("H(%s) = %f\n", mot, h);

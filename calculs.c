@@ -252,7 +252,7 @@ int maineu(int argc, char* argv[])
     //char* mot_test = "aloha";
 
     char* essai = "alaha";
-    int resultat[5] = {0,1,0,2,1};
+    int resultat[5] = {0,1,1,2,1};
 
     affichage_resultat(essai, resultat, 5);
 
