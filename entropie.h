@@ -9,7 +9,7 @@ float calcul_entropie_mot(char* mot, char* mots_a_tester[], int nb_mots_a_tester
 
 void init_matrix(int ***matrix, int n, int p);
 
-float trouver_mot_h_max(char* mots_a_tester[], int nb_mots_a_tester, char mot_h_max[], int** liste_patterns);
+float trouver_mot_h_max(char* dico[], int nb_mots_dico, char* mots_a_tester[], int nb_mots_a_tester, char mot_h_max[], int** liste_patterns);
 
 void creation_liste_patterns(int nb_lettres, int* liste_patterns[]);
 

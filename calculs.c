@@ -44,10 +44,10 @@ int nb_occurences_ban(char* essai, int* resultat, char lettre)
 
     for (int i = 0; i<nb_lettres; i++)
     {
-        if (essai[i]==lettre && resultat[i]==0) nb_occ_ban++;
+        if (essai[i]==lettre && resultat[i]>0 ) nb_occ_ban++;
 
     }
-    return nb_occ_ban;
+    return nb_occ_ban+1;
 }
 
 //Incrémente de 1 la valeur aassociée à la lettre
@@ -66,20 +66,29 @@ void increment_par_valeur(int* lst_lettres_ban, int* occ_ban, int nb_lettres, ch
 //Vérifie si les lettres jaunes contenues dans data correspondent au mot_test
 int correspondance_ltr_jaune(char* mot_test, struct donnees* data)
 {
-    int nb_lettres = strlen(mot_test);
+    int nb_lettres = 5;
 
     int nb_jaunes = 0;
     int nb_corres = 0;
     int* trace = (int*) calloc(nb_lettres,sizeof(int)); //Pour se rappeler des lettres déjà détectées : 1 si déjà détectée, 0 sinon
 
-    for (int i=0; i<nb_lettres; i++)
+
+
+    //On élimine les mots avec des lettres au mauvais endroit (ex : "porte" n'est pas compatible avec "o" en 
+    //lettre jaune en 2e position car sinon le "o" serait vert )
+    for (int j=0; j<nb_lettres; j++) 
+    {
+        if (data->lst_etats[j]==1 && mot_test[data->lst_pos[j]]==data->lst_lettres[j]) return 0;
+    }
+
+    for (int i=0; i<nb_lettres; i++) //indice data
     {
         if (data->lst_etats[i]==1) //Si c'est une lettre jaune
         {
             nb_jaunes++; //
-            for (int k=0; k<nb_lettres; k++)
+            for (int k=0; k<nb_lettres; k++) //indice mot_test
             {
-                if (mot_test[k]==data->lst_lettres[i] && trace[k]==0)
+                if (mot_test[k]==data->lst_lettres[i] && trace[k]==0) //On cherche les correspondances en nombre de jaunes
                 {
                     //printf("%c = %c | trace[%d] = %d\n",mot_test[k], lst_lettres[i], k, trace[k]);
                     trace[k] = 1;
@@ -90,7 +99,7 @@ int correspondance_ltr_jaune(char* mot_test, struct donnees* data)
         }
     }
     free(trace);
-    //printf("%d corres sur %d jaunes --> ", nb_corres, nb_jaunes);
+    printf("%d corres sur %d jaunes --> ", nb_corres, nb_jaunes);
 
     if (nb_corres == nb_jaunes) return 1;
     else return 0;
@@ -128,7 +137,6 @@ int test_ltr_ban(char* mot_test, struct donnees* data)
     return 1; //Le mot ne contient pas de lettre bannie
 }
 
-//A FIX
 //Reset data et remplit lst_lettres, lst_etats, lst_pos, lst_lettres_ban à partir d'essai et de resultat
 void extraction_donnees(char* essai, int resultat[], struct donnees* data)
 {
@@ -158,6 +166,35 @@ void extraction_donnees(char* essai, int resultat[], struct donnees* data)
     }
 }
 
+//Met à jour data1 avec les valeurs de data2
+void fusion_donnees(struct donnees* data1, struct donnees* data2)
+{
+    int nb_lettres = 5;
+    //struct donnees* res_data = init_data();
+    int indice_lst = indice_courant(data1);
+    for (int i=0; i< nb_lettres; i++)
+    {
+        if (lettre_est_dans(data1->lst_lettres, data2->lst_lettres[i])==0)
+        {
+            data1->lst_lettres[indice_lst]=data2->lst_lettres[i];
+            data1->lst_etats[indice_lst]=data2->lst_etats[i];
+            data1->lst_pos[indice_lst]=data2->lst_pos[i];
+
+        }
+    }
+}
+
+//Renvoit l'indice de la prochaine case à remplir dans lst_lettres
+int indice_courant(struct donnees* data)
+{
+    int nb_lettres = 5;
+    int indice = 0;
+    for (indice = 0; indice< nb_lettres; indice++)
+    {
+        if (data->lst_etats[indice]==-1) break;
+    }
+    return indice;
+}
 
 int verif_compatibilite(char* mot_test, struct donnees* data)
 {
@@ -220,6 +257,11 @@ struct donnees* init_data()
     data->lst_pos[2] = -1;
     data->lst_pos[3] = -1;
     data->lst_pos[4] = -1;
+    for (int i = 0;i<26; i++)
+    {
+        //data->lst_lettres_ban[i]=NULL;
+        data->occ_ban[i] = 0;
+    }
     return data;
 }
 
@@ -231,7 +273,7 @@ void free_data(struct donnees* data)
     free(data);
 }
 
-int maineu(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
     //FAIRE STRUCT DONNEES
 
@@ -249,10 +291,10 @@ int maineu(int argc, char* argv[])
     */
 
     //char* mot_cible = "porte";
-    //char* mot_test = "aloha";
+    char* mot_test = "alrto";
 
-    char* essai = "alaha";
-    int resultat[5] = {0,1,1,2,1};
+    char* essai = "porte";
+    int resultat[5] = {0,1,2,1,0};
 
     affichage_resultat(essai, resultat, 5);
 
@@ -260,11 +302,11 @@ int maineu(int argc, char* argv[])
 
     affichage_donnees(data);
 
-    /*
+    
     printf("corres_verte : %d\n",correspondance_ltr_verte(mot_test, data));
     printf("corres_jaune : %d\n",correspondance_ltr_jaune(mot_test, data));
     printf("corres_ban: %d\n",test_ltr_ban(mot_test, data));
-    */
+    
 
     return 0;
 }

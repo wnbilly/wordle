@@ -27,7 +27,8 @@ int liste_mots_prob(char* mots_probables[], char* mots_a_tester[], int nb_mots_a
             indice_mot_prob++;
         }
     }
-    return indice_mot_prob-1; //Renvoie le nombre de mots compatibles
+    if (indice_mot_prob==0) return 0;
+    else return indice_mot_prob-1; //Renvoie le nombre de mots compatibles
 }
 
 //Retourne le nombre de mots compatibles avec les données
@@ -82,9 +83,17 @@ float calcul_entropie_mot(char* mot, char* mots_a_tester[], int nb_mots_a_tester
 
 //Observations : certains mot (comme tarie) ont la même entropie lors des runs 3 4 5 : H(tarie) = 7.857382
 
-//après modif de extracion_donnees
+//après modif de extraction_donnees
 //aeree 9.244666 sans free_data log6.log, H(tarie) = 7.857382
 //aeree 9.244666 sans free_data log7.log, H(tarie) = 7.857382
+
+//log changé en log2
+//aeree 13.337233 sans free_data log8.log
+//nanan 9.734656 avec free_data log9.log
+//nanan 9.734656 avec free_data log10.log    les entropies sont égales pour chaque mot avec free_data
+
+//test_lettre corrigé
+//
 
 void init_matrix(int ***matrix, int n, int p) //Pour l'utiliser, on initialise int** maxtrix;
 {
@@ -96,22 +105,23 @@ void init_matrix(int ***matrix, int n, int p) //Pour l'utiliser, on initialise i
     }
 }
 
-//TO DO void free_matrix
-
-float trouver_mot_h_max(char* mots_a_tester[], int nb_mots_a_tester, char mot_h_max[], int** liste_patterns)
+//Calcul entropie en testant les mots du gros dico et en trouvant les mots compatibles dans le dico ajusté
+float trouver_mot_h_max(char* dico[], int nb_mots_dico, char* mots_a_tester[], int nb_mots_a_tester, char* mot_h_max, int** liste_patterns)
 {
     float h_max = 0;
-    for (int k=0; k<nb_mots_a_tester; k++)
+    for (int k=0; k<nb_mots_dico; k++)
     {
         printf("%d : ",k);
-        float h_temp = calcul_entropie_mot(mots_a_tester[k], mots_a_tester, nb_mots_a_tester, liste_patterns);
+        float h_temp = calcul_entropie_mot(dico[k], mots_a_tester, nb_mots_a_tester, liste_patterns);
         if (h_temp>h_max)
         {
             h_max = h_temp;
-            mot_h_max = mots_a_tester[k];
+            strcpy(mot_h_max, dico[k]);
+            //*mot_h_max = mots_a_tester[k];
             printf("%s nv max : %f\n",mot_h_max, h_max);
         }
     }
+    printf("mot_h_max : %s avec %f\n", mot_h_max, h_max);
     return h_max;
 }
 
@@ -155,7 +165,7 @@ void affichage_liste_patterns(int **liste_patterns)
     printf("=============\n");
 }
 
-int main(int argc, char* argv[])
+int maine(int argc, char* argv[])
 {
     //FAIRE STRUCT DONNEES
 
@@ -190,7 +200,7 @@ int main(int argc, char* argv[])
     
     char mot_h_max[5];
 
-    float h_max = trouver_mot_h_max(mots_a_tester, nb_mots_a_tester, mot_h_max, liste_patterns);
+    float h_max = trouver_mot_h_max(mots_a_tester, nb_mots_a_tester, mots_a_tester, nb_mots_a_tester, mot_h_max, liste_patterns);
 
     printf("Mot entropie max est %s avec %f\n", mot_h_max, h_max);
     
