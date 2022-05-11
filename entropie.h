@@ -1,7 +1,9 @@
 #ifndef ENTROPIE_H
 #define ENTROPIE_H
 
-int liste_mots_prob(char* mots_probables[], char* mots_a_tester[], int nb_mots_a_tester, struct donnees* data);
+int liste_mots_prob1(char* mots_probables[], char* mots_a_tester[], int nb_mots_a_tester, struct donnees* data);
+
+int liste_mots_prob(char* mots_probables[], char* mots_a_tester[], int nb_mots_a_tester, struct donnees* all_data[], int nb_essais);
 
 int nombre_mots_prob(char* mots_a_tester[], int nb_mots_a_tester, struct donnees* data);
 

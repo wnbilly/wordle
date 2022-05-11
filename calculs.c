@@ -72,8 +72,6 @@ int correspondance_ltr_jaune(char* mot_test, struct donnees* data)
     int nb_corres = 0;
     int* trace = (int*) calloc(nb_lettres,sizeof(int)); //Pour se rappeler des lettres déjà détectées : 1 si déjà détectée, 0 sinon
 
-
-
     //On élimine les mots avec des lettres au mauvais endroit (ex : "porte" n'est pas compatible avec "o" en 
     //lettre jaune en 2e position car sinon le "o" serait vert )
     for (int j=0; j<nb_lettres; j++) 
@@ -179,6 +177,7 @@ int indice_courant(struct donnees* data)
     return indice;
 }
 
+//Vérifie la compatibilité entre un mot et une struct donnees
 int verif_compatibilite(char* mot_test, struct donnees* data)
 {
 
@@ -186,7 +185,8 @@ int verif_compatibilite(char* mot_test, struct donnees* data)
     else return 0;
 }
 
-int verif__compatibilite_complete(char* mot_test, struct donnees* all_data[], int nb_essais)
+//Vérifie la compatibilité entre un mot et un ensemble de struct donnees
+int verif_compatibilite_complete(char* mot_test, struct donnees* all_data[], int nb_essais)
 {
     for( int i=0; i<nb_essais; i++)
     {
@@ -273,7 +273,7 @@ void init_data_array(struct donnees* all_data[], int max_essais)
     }
 }
 
-int main(int argc, char* argv[])
+int mainc(int argc, char* argv[])
 {
     //FAIRE STRUCT DONNEES
 

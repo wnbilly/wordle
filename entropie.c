@@ -15,13 +15,29 @@ gcc -Wall -Werror -Wfatal-errors -o ENTROPIE entropie.c calculs.c acquisition.c 
 
 */
 
-//Remplit la liste de mots compatibles avec les données parmi les mots_a_tester et renvoie le nombre de mots compatibles
-int liste_mots_prob(char* mots_probables[], char* mots_a_tester[], int nb_mots_a_tester, struct donnees* data)
+//Remplit la liste de mots compatibles avec UN struct donnees parmi les mots_a_tester et renvoie le nombre de mots compatibles
+int liste_mots_prob1(char* mots_probables[], char* mots_a_tester[], int nb_mots_a_tester, struct donnees* data)
 {
     int indice_mot_prob = 0;
     for (int i=0; i<nb_mots_a_tester; i++)
     {
         if (verif_compatibilite(mots_a_tester[i], data) == 1)
+        {
+            mots_probables[indice_mot_prob] = mots_a_tester[i];
+            indice_mot_prob++;
+        }
+    }
+    if (indice_mot_prob==0) return 0;
+    else return indice_mot_prob-1; //Renvoie le nombre de mots compatibles
+}
+
+//Remplit la liste de mots compatibles avec l'ensemble des données parmi les mots_a_tester et renvoie le nombre de mots compatibles
+int liste_mots_prob(char* mots_probables[], char* mots_a_tester[], int nb_mots_a_tester, struct donnees* all_data[], int nb_essais)
+{
+    int indice_mot_prob = 0;
+    for (int i=0; i<nb_mots_a_tester; i++)
+    {
+        if (verif_compatibilite_complete(mots_a_tester[i], all_data, nb_essais) == 1)
         {
             mots_probables[indice_mot_prob] = mots_a_tester[i];
             indice_mot_prob++;
@@ -52,7 +68,6 @@ float calcul_entropie_mot(char* mot, char* mots_a_tester[], int nb_mots_a_tester
     
     float h = 0;
     float p = 0;
-
     for (int j = 0; j<243; j++)
     {
         struct donnees* data = init_data();
@@ -64,7 +79,7 @@ float calcul_entropie_mot(char* mot, char* mots_a_tester[], int nb_mots_a_tester
         p = ((float) nombre_mots_prob(mots_a_tester, nb_mots_a_tester, data)+1)/nb_mots_a_tester;
         //printf("p = %f\n",p);
         if (p!=0) h = h-p*log2f(p);
-        //free_data(data);
+        //free_data(data); enlever ce free ne crée pas de fuite de mémoire
     }
     printf("H(%s) = %f\n", mot, h);
     return h;

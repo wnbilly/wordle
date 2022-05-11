@@ -33,6 +33,15 @@ int test_victoire(int resultat[], int nb_lettres)
     return 1; //Gagné
 }
 
+void remplissage_resultat(char* mot_cible, char* essai, int resultat[], int nb_lettres)
+{
+    //On détecte les lettres à mettre en vert
+    test_place(mot_cible,essai,resultat,nb_lettres);
+
+    //on détecte les lettres à mettre en jaune
+    test_lettre(mot_cible,essai,resultat, nb_lettres);
+}
+
 void reset_resultat(int resultat[], int nb_lettres)
 {
     for (int i=0; i<nb_lettres; i++)
@@ -86,7 +95,7 @@ int main(int argc, char* argv[])
     //ACQUISITION MOTS
     char* nom_fichier = "liste_complete_triee.txt";
     int taille_test = 5070;
-    char* mots[taille_test];//=malloc(taille_test*sizeof(char*));
+    char* mots[taille_test];
     int nb_mots = extraction_mots(mots, nom_fichier, nb_lettres);
     
     //VARIABLES A MANIPULER
@@ -116,11 +125,7 @@ int main(int argc, char* argv[])
                 acquisition_clavier(essai, nb_lettres);
             }
 
-            //On détecte les lettres à mettre en vert
-            test_place(mot_cible,essai,resultat,nb_lettres);
-
-            //on détecte les lettres à mettre en jaune
-            test_lettre(mot_cible,essai,resultat, nb_lettres);
+            remplissage_resultat(mot_cible, essai, resultat, nb_lettres);
 
             affichage_resultat(essai, resultat, nb_lettres);
 
@@ -145,6 +150,9 @@ int main(int argc, char* argv[])
         init_matrix(&liste_patterns, 243, 5);
         creation_liste_patterns(5, liste_patterns);
 
+        struct donnees* all_data[max_essais];
+        init_data_array(all_data, max_essais);
+
         essai[0] = 'a';
         essai[1] = 'e';
         essai[2] = 'r';
@@ -158,7 +166,6 @@ int main(int argc, char* argv[])
 
         nb_mots_prob = nb_mots_prob;
 
-        struct donnees* data = init_data();
 
         //On détecte les lettres à mettre en vert
         test_place(mot_cible,essai,resultat,nb_lettres);
@@ -168,15 +175,15 @@ int main(int argc, char* argv[])
 
         affichage_resultat(essai, resultat, nb_lettres);
 
-        extraction_donnees(essai, resultat, data);
+        extraction_donnees(essai, resultat, all_data[0]);
 
-        affichage_donnees(data);
+        affichage_donnees(all_data[0]);
 
         for (nb_essais=0; nb_essais<max_essais; nb_essais++)
         {
             printf("Essai %d/%d. ", nb_essais+1, max_essais);
 
-            int nb_mots_prob_buffer = liste_mots_prob(mots_probables_buffer, mots_probables, nb_mots_prob, data);
+            int nb_mots_prob_buffer = liste_mots_prob(mots_probables_buffer, mots_probables, nb_mots_prob, all_data, nb_essais);
             //affichage_tableau_mots(mots_probables, nb_mots_prob);
             printf("nb_mots_prob_buffer : %d\n", nb_mots_prob_buffer);
             //printf("nb_mots_prob%d : %d\n",nb_essais, nb_mots_prob);
@@ -184,10 +191,8 @@ int main(int argc, char* argv[])
             trouver_mot_h_max(mots, nb_mots, mots_probables_buffer, nb_mots_prob_buffer, essai, liste_patterns);
 
             printf("essai :%s\n",essai);
-            test_place(mot_cible,essai,resultat,nb_lettres);
 
-            //on détecte les lettres à mettre en jaune
-            test_lettre(mot_cible,essai,resultat, nb_lettres);
+            remplissage_resultat(mot_cible, essai, resultat, nb_lettres);
 
             affichage_resultat(essai, resultat, nb_lettres);
 
@@ -206,6 +211,7 @@ int main(int argc, char* argv[])
             {
                 affichage_perdu(mot_cible);
             }
+            /*
     } else if (mode == 2) //on ne tente que des mots probables
     {
         int** liste_patterns; //Initialisation de liste_patterns
@@ -243,7 +249,7 @@ int main(int argc, char* argv[])
         {
             printf("Essai %d/%d. ", nb_essais+1, max_essais);
 
-            int nb_mots_prob_buffer = liste_mots_prob(mots_probables_buffer, mots_probables, nb_mots_prob, data);
+            int nb_mots_prob_buffer = liste_mots_prob(mots_probables_buffer, mots_probables, nb_mots_prob, all_data, nb_essais);
             //affichage_tableau_mots(mots_probables, nb_mots_prob);
             printf("nb_mots_prob_buffer : %d\n", nb_mots_prob_buffer);
             //printf("nb_mots_prob%d : %d\n",nb_essais, nb_mots_prob);
@@ -273,9 +279,10 @@ int main(int argc, char* argv[])
             {
                 affichage_perdu(mot_cible);
             }
+            */
     }
 
-    
+    free(resultat);
 
     return 0;
 }

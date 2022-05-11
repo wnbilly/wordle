@@ -31,6 +31,8 @@ int indice_courant(struct donnees* data);
 
 int verif_compatibilite(char* mot_test, struct donnees* data);
 
+int verif_compatibilite_complete(char* mot_test, struct donnees* all_data[], int nb_essais);
+
 void affichage_donnees(struct donnees* data);
 
 struct donnees* init_data();
