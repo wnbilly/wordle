@@ -139,7 +139,74 @@ int main(int argc, char* argv[])
             affichage_perdu(mot_cible);
         }
 
-    } else if (mode == 1)
+    } else if (mode == 1) //on peut tenter des mots non compatibles
+    {
+        int** liste_patterns; //Initialisation de liste_patterns
+        init_matrix(&liste_patterns, 243, 5);
+        creation_liste_patterns(5, liste_patterns);
+
+        essai[0] = 'a';
+        essai[1] = 'e';
+        essai[2] = 'r';
+        essai[3] = 'e';
+        essai[4] = 'e';
+
+
+        char* mots_probables[5070];
+        char* mots_probables_buffer[5070];
+        int nb_mots_prob = extraction_mots(mots_probables, nom_fichier, nb_lettres);
+
+        nb_mots_prob = nb_mots_prob;
+
+        struct donnees* data = init_data();
+
+        //On détecte les lettres à mettre en vert
+        test_place(mot_cible,essai,resultat,nb_lettres);
+
+        //on détecte les lettres à mettre en jaune
+        test_lettre(mot_cible,essai,resultat, nb_lettres);
+
+        affichage_resultat(essai, resultat, nb_lettres);
+
+        extraction_donnees(essai, resultat, data);
+
+        affichage_donnees(data);
+
+        for (nb_essais=0; nb_essais<max_essais; nb_essais++)
+        {
+            printf("Essai %d/%d. ", nb_essais+1, max_essais);
+
+            int nb_mots_prob_buffer = liste_mots_prob(mots_probables_buffer, mots_probables, nb_mots_prob, data);
+            //affichage_tableau_mots(mots_probables, nb_mots_prob);
+            printf("nb_mots_prob_buffer : %d\n", nb_mots_prob_buffer);
+            //printf("nb_mots_prob%d : %d\n",nb_essais, nb_mots_prob);
+            //affichage_tableau_mots(mots_probables_buffer, nb_mots_prob_buffer);
+            trouver_mot_h_max(mots, nb_mots, mots_probables_buffer, nb_mots_prob_buffer, essai, liste_patterns);
+
+            printf("essai :%s\n",essai);
+            test_place(mot_cible,essai,resultat,nb_lettres);
+
+            //on détecte les lettres à mettre en jaune
+            test_lettre(mot_cible,essai,resultat, nb_lettres);
+
+            affichage_resultat(essai, resultat, nb_lettres);
+
+            //TEST VICTOIRE
+                if (test_victoire(resultat, nb_lettres)==1)
+                {           //GAGNE
+                    affichage_gagne(nb_essais);
+                    break;
+                } else {    //PAS GAGNE
+                    reset_resultat(resultat, nb_lettres);
+                }
+            
+            *mots_probables = *mots_probables_buffer;
+        }
+            if (nb_essais == max_essais)
+            {
+                affichage_perdu(mot_cible);
+            }
+    } else if (mode == 2) //on ne tente que des mots probables
     {
         int** liste_patterns; //Initialisation de liste_patterns
         init_matrix(&liste_patterns, 243, 5);

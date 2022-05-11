@@ -92,7 +92,7 @@ float calcul_entropie_mot(char* mot, char* mots_a_tester[], int nb_mots_a_tester
 //nanan 9.734656 avec free_data log9.log
 //nanan 9.734656 avec free_data log10.log    les entropies sont égales pour chaque mot avec free_data
 
-//test_lettre corrigé
+//test_lettre et test_ltr_jaune corrigés
 //
 
 void init_matrix(int ***matrix, int n, int p) //Pour l'utiliser, on initialise int** maxtrix;
@@ -165,7 +165,7 @@ void affichage_liste_patterns(int **liste_patterns)
     printf("=============\n");
 }
 
-int maine(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
     //FAIRE STRUCT DONNEES
 

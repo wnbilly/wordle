@@ -37,5 +37,7 @@ struct donnees* init_data();
 
 void free_data(struct donnees* data);
 
+void init_data_array(struct donnees* all_data[], int max_essais);
+
 
 #endif //CALCULS_H

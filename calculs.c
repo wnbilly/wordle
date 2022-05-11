@@ -99,7 +99,7 @@ int correspondance_ltr_jaune(char* mot_test, struct donnees* data)
         }
     }
     free(trace);
-    printf("%d corres sur %d jaunes --> ", nb_corres, nb_jaunes);
+    //printf("%d corres sur %d jaunes --> ", nb_corres, nb_jaunes);
 
     if (nb_corres == nb_jaunes) return 1;
     else return 0;
@@ -166,23 +166,6 @@ void extraction_donnees(char* essai, int resultat[], struct donnees* data)
     }
 }
 
-//Met à jour data1 avec les valeurs de data2
-void fusion_donnees(struct donnees* data1, struct donnees* data2)
-{
-    int nb_lettres = 5;
-    //struct donnees* res_data = init_data();
-    int indice_lst = indice_courant(data1);
-    for (int i=0; i< nb_lettres; i++)
-    {
-        if (lettre_est_dans(data1->lst_lettres, data2->lst_lettres[i])==0)
-        {
-            data1->lst_lettres[indice_lst]=data2->lst_lettres[i];
-            data1->lst_etats[indice_lst]=data2->lst_etats[i];
-            data1->lst_pos[indice_lst]=data2->lst_pos[i];
-
-        }
-    }
-}
 
 //Renvoit l'indice de la prochaine case à remplir dans lst_lettres
 int indice_courant(struct donnees* data)
@@ -201,6 +184,15 @@ int verif_compatibilite(char* mot_test, struct donnees* data)
 
     if (correspondance_ltr_jaune(mot_test, data)==1 && correspondance_ltr_verte(mot_test, data)==1 && test_ltr_ban(mot_test, data)==1) return 1;
     else return 0;
+}
+
+int verif__compatibilite_complete(char* mot_test, struct donnees* all_data[], int nb_essais)
+{
+    for( int i=0; i<nb_essais; i++)
+    {
+        if (verif_compatibilite(mot_test, all_data[i])==0) return 0;
+    }
+    return 1;
 }
 
 //Affiche le contenu de data
@@ -273,11 +265,19 @@ void free_data(struct donnees* data)
     free(data);
 }
 
+void init_data_array(struct donnees* all_data[], int max_essais)
+{
+    for(int i=0; i<max_essais; i++)
+    {
+        all_data[i]=init_data();
+    }
+}
+
 int main(int argc, char* argv[])
 {
     //FAIRE STRUCT DONNEES
 
-    struct donnees* data = init_data();
+    //struct donnees* data = init_data();
 
 
     //affichage_tableau_mots(mots_probables,nb_mots_probables);
@@ -291,22 +291,26 @@ int main(int argc, char* argv[])
     */
 
     //char* mot_cible = "porte";
-    char* mot_test = "alrto";
+    //char* mot_test = "alrto";
 
     char* essai = "porte";
     int resultat[5] = {0,1,2,1,0};
+    int max_essais = 6;
 
     affichage_resultat(essai, resultat, 5);
 
-    extraction_donnees(essai, resultat, data);
+    struct donnees* all_data[6];
+    init_data_array(all_data, max_essais);
 
-    affichage_donnees(data);
+    extraction_donnees(essai, resultat, all_data[2]);
 
-    
+    affichage_donnees(all_data[2]);
+
+    /*
     printf("corres_verte : %d\n",correspondance_ltr_verte(mot_test, data));
     printf("corres_jaune : %d\n",correspondance_ltr_jaune(mot_test, data));
     printf("corres_ban: %d\n",test_ltr_ban(mot_test, data));
-    
+    */
 
     return 0;
 }
