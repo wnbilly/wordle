@@ -31,7 +31,7 @@ int liste_mots_prob1(char* mots_probables[], char* mots_a_tester[], int nb_mots_
     else return indice_mot_prob-1; //Renvoie le nombre de mots compatibles
 }
 
-//Remplit la liste de mots compatibles avec l'ensemble des données parmi les mots_a_tester et renvoie le nombre de mots compatibles
+//Remplit la liste mots_probables avec l'ensemble des données parmi les mots_a_tester et renvoie le nombre de mots probables
 int liste_mots_prob(char* mots_probables[], char* mots_a_tester[], int nb_mots_a_tester, struct donnees* all_data[], int nb_essais)
 {
     int indice_mot_prob = 0;
@@ -55,13 +55,15 @@ int nombre_mots_prob(char* mots_a_tester[], int nb_mots_a_tester, struct donnees
     {
         if (verif_compatibilite(mots_a_tester[i], data) == 1)
         {
+            //printf("%s comp avec data :\n", mots_a_tester[i]);
+            //affichage_donnees(data);
             nb_mots_prob++;
         }
     }
     return nb_mots_prob-1; //Renvoie le nombre de mots compatibles
 }
 
-
+//Calcule l'entropie de mot relativement aux mots_a_tester et au nombre de mots a tester
 float calcul_entropie_mot(char* mot, char* mots_a_tester[], int nb_mots_a_tester, int** liste_patterns) //FIX NB DE MOTS A TESTER
 {
     //int nb_lettres = 5;
@@ -79,7 +81,7 @@ float calcul_entropie_mot(char* mot, char* mots_a_tester[], int nb_mots_a_tester
         p = ((float) nombre_mots_prob(mots_a_tester, nb_mots_a_tester, data)+1)/nb_mots_a_tester;
         //printf("p = %f\n",p);
         if (p!=0) h = h-p*log2f(p);
-        //free_data(data); enlever ce free ne crée pas de fuite de mémoire
+        //free_data(data); //enlever ce free ne crée pas de fuite de mémoire
     }
     printf("H(%s) = %f\n", mot, h);
     return h;
@@ -108,7 +110,9 @@ float calcul_entropie_mot(char* mot, char* mots_a_tester[], int nb_mots_a_tester
 //nanan 9.734656 avec free_data log10.log    les entropies sont égales pour chaque mot avec free_data
 
 //test_lettre et test_ltr_jaune corrigés
-//
+
+//correspondance_ltr_jaune amélioré (trace des lettres vertes)
+//aeree 10.334809 dans nvlog1.log   H(tarie) = 6.329237     H(TARIE) = 6.32896        H(AEREE) = 5.00145
 
 void init_matrix(int ***matrix, int n, int p) //Pour l'utiliser, on initialise int** maxtrix;
 {
@@ -120,7 +124,7 @@ void init_matrix(int ***matrix, int n, int p) //Pour l'utiliser, on initialise i
     }
 }
 
-//Calcul entropie en testant les mots du gros dico et en trouvant les mots compatibles dans le dico ajusté
+//Calcul entropie en testant les mots du gros dico et en trouvant les mots compatibles dans la liste des mots compatibles
 float trouver_mot_h_max(char* dico[], int nb_mots_dico, char* mots_a_tester[], int nb_mots_a_tester, char* mot_h_max, int** liste_patterns)
 {
     float h_max = 0;
@@ -133,7 +137,9 @@ float trouver_mot_h_max(char* dico[], int nb_mots_dico, char* mots_a_tester[], i
             h_max = h_temp;
             strcpy(mot_h_max, dico[k]);
             //*mot_h_max = mots_a_tester[k];
+            printf_rouge();
             printf("%s nv max : %f\n",mot_h_max, h_max);
+            printf_standard();
         }
     }
     printf("mot_h_max : %s avec %f\n", mot_h_max, h_max);
@@ -213,12 +219,12 @@ int main(int argc, char* argv[])
 
     //affichage_tableau_mots(mots_probables, nb_mots_probables);
     
-    char mot_h_max[5];
-
-    float h_max = trouver_mot_h_max(mots_a_tester, nb_mots_a_tester, mots_a_tester, nb_mots_a_tester, mot_h_max, liste_patterns);
-
-    printf("Mot entropie max est %s avec %f\n", mot_h_max, h_max);
     
+
+    //calcul_entropie_mot("aeree", mots_a_tester, nb_mots_a_tester, liste_patterns);
+
+    char mot_h_max[5];
+    trouver_mot_h_max(mots_a_tester, nb_mots_a_tester, mots_a_tester, nb_mots_a_tester, mot_h_max, liste_patterns);
 
     free(*liste_patterns);
 

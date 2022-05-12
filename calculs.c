@@ -26,7 +26,7 @@ int lettre_est_dans(char* mot, char lettre) //Renvoie 1 si la lettre est dans le
 }
 
 //Retourne le nombre d'occurences d'une lettre dans un mot
-int nb_occurences(char* mot, char lettre) //Renvoie le nombre d'occurences de la lettre dans le mot
+int nb_occurences(char* mot, char lettre)
 {
     int nb_lettres = strlen(mot);
     int nb_occur = 0;
@@ -50,18 +50,6 @@ int nb_occurences_ban(char* essai, int* resultat, char lettre)
     return nb_occ_ban+1;
 }
 
-//Incrémente de 1 la valeur aassociée à la lettre
-void increment_par_valeur(int* lst_lettres_ban, int* occ_ban, int nb_lettres, char lettre)
-{
-    for (int i = 0; i<nb_lettres; i++)
-    {
-        if (lst_lettres_ban[i]==lettre)
-        {
-            occ_ban[i]++;
-            break;
-        }
-    }
-}
 
 //Vérifie si les lettres jaunes contenues dans data correspondent au mot_test
 int correspondance_ltr_jaune(char* mot_test, struct donnees* data)
@@ -73,10 +61,15 @@ int correspondance_ltr_jaune(char* mot_test, struct donnees* data)
     int* trace = (int*) calloc(nb_lettres,sizeof(int)); //Pour se rappeler des lettres déjà détectées : 1 si déjà détectée, 0 sinon
 
     //On élimine les mots avec des lettres au mauvais endroit (ex : "porte" n'est pas compatible avec "o" en 
-    //lettre jaune en 2e position car sinon le "o" serait vert )
-    for (int j=0; j<nb_lettres; j++) 
+    //lettre jaune en 2e position car sinon le "o" serait vert)
+    for (int j=0; j<nb_lettres; j++)
     {
-        if (data->lst_etats[j]==1 && mot_test[data->lst_pos[j]]==data->lst_lettres[j]) return 0;
+        if (data->lst_etats[j]==1 && mot_test[data->lst_pos[j]]==data->lst_lettres[j]) 
+        {
+            free(trace);
+            return 0;
+        }
+        if (data->lst_etats[j]==2) trace[data->lst_pos[j]]=1; //On marque les lettres vertes comme déjà traitées
     }
 
     for (int i=0; i<nb_lettres; i++) //indice data
@@ -96,10 +89,16 @@ int correspondance_ltr_jaune(char* mot_test, struct donnees* data)
             }
         }
     }
-    free(trace);
-    //printf("%d corres sur %d jaunes --> ", nb_corres, nb_jaunes);
 
-    if (nb_corres == nb_jaunes) return 1;
+    free(trace);
+    
+    if (nb_corres == nb_jaunes) 
+    {
+        //printf("%d corres sur %d jaunes --> ", nb_corres, nb_jaunes);
+        //printf("%s comp avec data :\n", mot_test);
+        //affichage_donnees(data);
+        return 1;
+    }
     else return 0;
 }
 
@@ -135,7 +134,7 @@ int test_ltr_ban(char* mot_test, struct donnees* data)
     return 1; //Le mot ne contient pas de lettre bannie
 }
 
-//Reset data et remplit lst_lettres, lst_etats, lst_pos, lst_lettres_ban à partir d'essai et de resultat
+//Remplit lst_lettres, lst_etats, lst_pos, lst_lettres_ban à partir d'essai et de resultat
 void extraction_donnees(char* essai, int resultat[], struct donnees* data)
 {
     int nb_lettres = 5;
@@ -165,18 +164,6 @@ void extraction_donnees(char* essai, int resultat[], struct donnees* data)
 }
 
 
-//Renvoit l'indice de la prochaine case à remplir dans lst_lettres
-int indice_courant(struct donnees* data)
-{
-    int nb_lettres = 5;
-    int indice = 0;
-    for (indice = 0; indice< nb_lettres; indice++)
-    {
-        if (data->lst_etats[indice]==-1) break;
-    }
-    return indice;
-}
-
 //Vérifie la compatibilité entre un mot et une struct donnees
 int verif_compatibilite(char* mot_test, struct donnees* data)
 {
@@ -184,6 +171,7 @@ int verif_compatibilite(char* mot_test, struct donnees* data)
     if (correspondance_ltr_jaune(mot_test, data)==1 && correspondance_ltr_verte(mot_test, data)==1 && test_ltr_ban(mot_test, data)==1) return 1;
     else return 0;
 }
+
 
 //Vérifie la compatibilité entre un mot et un ensemble de struct donnees
 int verif_compatibilite_complete(char* mot_test, struct donnees* all_data[], int nb_essais)
@@ -273,7 +261,28 @@ void init_data_array(struct donnees* all_data[], int max_essais)
     }
 }
 
-int mainc(int argc, char* argv[])
+//Copy les size_src éléments de array_src dans array_dest, le reste de array_dest est inchangé
+void copy_array(char* array_dest[], int size_dest, char* array_src[], int size_src)
+{
+    if (size_src>size_dest)
+    {
+        printf("Erreur size_src < size_dest\n");
+        exit(0);
+    }
+
+    if (sizeof(array_dest[0])!=sizeof(array_src[0]))
+    {
+        printf("Erreur : array_dest et array_src n'ont pas les mêmes tailles de mots\n");
+        exit(0);
+    }
+
+    for(int i=0; i<size_src; i++)
+    {
+        strcpy(array_dest[i], array_src[i]);
+    }
+}
+
+int mainca(int argc, char* argv[])
 {
     //FAIRE STRUCT DONNEES
 
@@ -284,17 +293,18 @@ int mainc(int argc, char* argv[])
 
     /*TEST CORRES
 
-    char lst_lettres[] = {'a', 'o', 'h'};
-    int lst_etats[] = {1, 1, 1, 1, 1}; //Equivalent de resultat dans les autres codes
-    int lst_pos[] = {4, 1, 0, 3, 1};
-    char lst_lettres_ban[] = {'t', 'b'};
+    char lst_lettres[] = {'e', 'e'};
+    int lst_etats[] = {2, 1, -1, -1, -1}; //Equivalent de resultat dans les autres codes
+    int lst_pos[] = {1, 3, -1, -1, -1};
+    char lst_lettres_ban[] = {'a', 'r', 'e'};
+    int occ_ban
     */
 
     //char* mot_cible = "porte";
     //char* mot_test = "alrto";
 
-    char* essai = "porte";
-    int resultat[5] = {0,1,2,1,0};
+    char* essai = "aeree";
+    int resultat[5] = {0,2,0,1,0};
     int max_essais = 6;
 
     affichage_resultat(essai, resultat, 5);
@@ -305,6 +315,8 @@ int mainc(int argc, char* argv[])
     extraction_donnees(essai, resultat, all_data[2]);
 
     affichage_donnees(all_data[2]);
+
+    correspondance_ltr_jaune("teint", all_data[2]);
 
     /*
     printf("corres_verte : %d\n",correspondance_ltr_verte(mot_test, data));

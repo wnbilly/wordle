@@ -167,11 +167,7 @@ int main(int argc, char* argv[])
         nb_mots_prob = nb_mots_prob;
 
 
-        //On détecte les lettres à mettre en vert
-        test_place(mot_cible,essai,resultat,nb_lettres);
-
-        //on détecte les lettres à mettre en jaune
-        test_lettre(mot_cible,essai,resultat, nb_lettres);
+        remplissage_resultat(mot_cible, essai, resultat, nb_lettres);
 
         affichage_resultat(essai, resultat, nb_lettres);
 
@@ -183,12 +179,25 @@ int main(int argc, char* argv[])
         {
             printf("Essai %d/%d. ", nb_essais+1, max_essais);
 
-            int nb_mots_prob_buffer = liste_mots_prob(mots_probables_buffer, mots_probables, nb_mots_prob, all_data, nb_essais);
-            //affichage_tableau_mots(mots_probables, nb_mots_prob);
-            printf("nb_mots_prob_buffer : %d\n", nb_mots_prob_buffer);
-            //printf("nb_mots_prob%d : %d\n",nb_essais, nb_mots_prob);
-            //affichage_tableau_mots(mots_probables_buffer, nb_mots_prob_buffer);
-            trouver_mot_h_max(mots, nb_mots, mots_probables_buffer, nb_mots_prob_buffer, essai, liste_patterns);
+            if (nb_essais!=0)
+            {
+                
+                int nb_mots_prob_buffer = liste_mots_prob(mots_probables_buffer, mots_probables, nb_mots_prob, all_data, nb_essais);
+                printf("==================PROB==============%d mots\n", nb_mots_prob);
+                affichage_tableau_mots(mots_probables, nb_mots_prob);
+                printf("nb_mots_prob_buffer : %d\n", nb_mots_prob_buffer);
+                //printf("nb_mots_prob%d : %d\n",nb_essais, nb_mots_prob);
+                printf("==================BUFFER==============%d mots\n", nb_mots_prob_buffer);
+                affichage_tableau_mots(mots_probables_buffer, nb_mots_prob_buffer);
+                trouver_mot_h_max(mots, nb_mots, mots_probables_buffer, nb_mots_prob_buffer, essai, liste_patterns);
+
+                //*mots_probables = *mots_probables_buffer;
+                copy_array(mots_probables, nb_mots_prob, mots_probables_buffer, nb_mots_prob_buffer);
+                printf("==================PROB==============%d mots\n", nb_mots_prob);
+                affichage_tableau_mots(mots_probables, nb_mots_prob);
+                printf("==================BUFFER==============%d mots\n", nb_mots_prob_buffer);
+                affichage_tableau_mots(mots_probables_buffer, nb_mots_prob_buffer);
+            }
 
             printf("essai :%s\n",essai);
 
@@ -205,7 +214,7 @@ int main(int argc, char* argv[])
                     reset_resultat(resultat, nb_lettres);
                 }
             
-            *mots_probables = *mots_probables_buffer;
+            
         }
             if (nb_essais == max_essais)
             {
