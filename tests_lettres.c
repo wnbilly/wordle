@@ -79,6 +79,7 @@ void affichage_resultat(char* essai, int resultat[], int nb_lettres)
     printf("\n");
 }
 
+//Remplis les 2 (lettres verts) de resultat
 void test_place(char* mot, char* essai, int resultat[], int nb_lettres)
 {
     for (int i = 0; i<nb_lettres; i++)
@@ -88,6 +89,7 @@ void test_place(char* mot, char* essai, int resultat[], int nb_lettres)
     }
 }
 
+//Remplis les 1 (lettres jaunes) de resultat
 void test_lettre(char* mot, char* essai, int resultat[], int nb_lettres)
 {
     int* trace = (int*) calloc(nb_lettres,sizeof(int)); //Pour se rappeler des lettres déjà détectées : 1 si déjà détectée, 0 sinon
@@ -113,6 +115,7 @@ void test_lettre(char* mot, char* essai, int resultat[], int nb_lettres)
     free(trace);
 }
 
+//Vérifie si le mot joué par le joueur est dans le dictionnaire du jeu
 int test_existence_mot(char *mots[], char* essai, int nb_mots)
 {
     for (int i=0; i<nb_mots; i++)   //AMELIORABLE SI LA LISTE EST TRIEE PAR ORDRE ALPHABETIQUE

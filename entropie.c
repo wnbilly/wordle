@@ -55,11 +55,14 @@ int nombre_mots_prob(char* mots_a_tester[], int nb_mots_a_tester, struct donnees
     {
         if (verif_compatibilite(mots_a_tester[i], data) == 1)
         {
-            //printf("%s comp avec data :\n", mots_a_tester[i]);
-            //affichage_donnees(data);
+            /* VERIF DES TESTS DE LETTRES
+            printf("%s comp avec data :\n", mots_a_tester[i]);
+            affichage_donnees(data);
+            */
             nb_mots_prob++;
         }
     }
+    //printf("nb_mots_prob=%d\n",nb_mots_prob);
     return nb_mots_prob-1; //Renvoie le nombre de mots compatibles
 }
 
@@ -73,14 +76,17 @@ float calcul_entropie_mot(char* mot, char* mots_a_tester[], int nb_mots_a_tester
     for (int j = 0; j<243; j++)
     {
         struct donnees* data = init_data();
-        //affichage_debug(liste_patterns[j],5);
+        
         extraction_donnees(mot, liste_patterns[j], data);
-        //affichage_donnees(data);
-        //printf("%s\n",mot);
+
+        printf("%s\n",mot);
+        affichage_debug(liste_patterns[j],5);
+        affichage_donnees(data);
+        
         //printf("nb_mots_probables : %d\n", nombre_mots_prob(mots_a_tester, nb_mots_a_tester, data));
         p = ((float) nombre_mots_prob(mots_a_tester, nb_mots_a_tester, data)+1)/nb_mots_a_tester;
         //printf("p = %f\n",p);
-        if (p!=0) h = h-p*log2f(p);
+        if (p!=0) h = h+p*log2f(1/p); //Je note h mais on calcule l'espérance de l'entropie h en réalité
         //free_data(data); //enlever ce free ne crée pas de fuite de mémoire
     }
     printf("H(%s) = %f\n", mot, h);
@@ -221,11 +227,11 @@ int main(int argc, char* argv[])
     
     
 
-    //calcul_entropie_mot("aeree", mots_a_tester, nb_mots_a_tester, liste_patterns);
-
+    calcul_entropie_mot("aeree", mots_a_tester, nb_mots_a_tester, liste_patterns);
+/*
     char mot_h_max[5];
     trouver_mot_h_max(mots_a_tester, nb_mots_a_tester, mots_a_tester, nb_mots_a_tester, mot_h_max, liste_patterns);
-
+*/
     free(*liste_patterns);
 
     return 0;

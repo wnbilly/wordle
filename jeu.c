@@ -8,7 +8,7 @@
 
 
 //Main du Wordle
-//Compile avec gcc -Wall -Werror -Wfatal-errors -o JEU jeu.c acquisition.c tests_lettres.c && ./JEU
+//Compile avec gcc -Wall -Werror -Wfatal-errors -o JEU jeu.c acquisition.c tests_lettres.c calculs.c entropie.c -lm && ./JEU
 
 //piege donne de mauvais résultats
 
