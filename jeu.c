@@ -8,11 +8,9 @@
 
 
 //Main du Wordle
-//Compile avec gcc -Wall -Werror -Wfatal-errors -o JEU jeu.c acquisition.c tests_lettres.c calculs.c entropie.c -lm && ./JEU
-
-//piege donne de mauvais résultats
-
-//Essai+resultat = données = mots probables
+/*Compile avec 
+gcc -Wall -Werror -Wfatal-errors -o JEU jeu.c acquisition.c tests_lettres.c calculs.c entropie.c -lm && ./JEU
+*/
 
 /*
 void initialisation_partie(char* mot_cible, )
@@ -66,6 +64,228 @@ void affichage_perdu(char* mot_cible)
     printf_standard();
 }
 
+//Lance une partie jouée par un humain, retourne le nombre de coups pour gagner (-1 si perdu)
+int partie_joueur(int max_essais, int nb_lettres, char* mot_cible, char* mots[], int nb_mots)
+{
+    //VARIABLES A MANIPULER
+    char essai[nb_lettres]; //Variable du futur mot tenté par le joueur
+
+    int* resultat = (int*) calloc(nb_lettres,sizeof(int));
+    int nb_essais = 0;
+
+    //TOURS
+    for (nb_essais=0; nb_essais<max_essais; nb_essais++)
+    {
+        //Le joueur entre sa proposition
+        printf("Essai %d/%d. ", nb_essais+1, max_essais);
+        acquisition_clavier(essai, nb_lettres);
+        
+        //On vérifie si le mot est dans la liste
+        while (test_existence_mot(mots, essai, nb_mots)==0)
+        {
+            printf("Ce mot n'est pas dans la liste !\n");
+            acquisition_clavier(essai, nb_lettres);
+        }
+
+        remplissage_resultat(mot_cible, essai, resultat, nb_lettres);
+
+        affichage_resultat(essai, resultat, nb_lettres);
+
+        //TEST VICTOIRE
+        if (test_victoire(resultat, nb_lettres)==1)
+        {           //GAGNE
+            affichage_gagne(nb_essais);
+            break;
+        } else {    //PAS GAGNE
+            reset_resultat(resultat, nb_lettres);
+        }
+    }
+
+    if (nb_essais == max_essais)
+    {
+        affichage_perdu(mot_cible);
+        free(resultat);
+        return -1; //Le joueur a perdu
+    }
+
+    return nb_essais;
+}
+
+//Lance une partie jouée par un humain, retourne le nombre de coups pour gagner (-1 si perdu)
+int partie_bot1(int max_essais, int nb_lettres, char* mot_cible, char* mots[], int nb_mots, char* nom_fichier)
+{
+    //VARIABLES A MANIPULER
+    char essai[nb_lettres];
+
+    int* resultat = (int*) calloc(nb_lettres,sizeof(int));
+    int nb_essais = 0;
+
+    int** liste_patterns; //Initialisation de liste_patterns
+    init_matrix(&liste_patterns, 243, 5);
+    creation_liste_patterns(5, liste_patterns);
+
+    struct donnees* all_data[max_essais];
+    init_data_array(all_data, max_essais);
+
+    essai[0] = 'a';
+    essai[1] = 'e';
+    essai[2] = 'r';
+    essai[3] = 'e';
+    essai[4] = 'e';
+
+
+    char* mots_probables[nb_mots];
+    char* mots_probables_buffer[nb_mots];
+    int nb_mots_prob = nb_mots;
+    int nb_mots_prob_buffer;
+
+    copy_array(mots_probables, nb_mots, mots, nb_mots); //Avant un quelconque essai, tous les mots sont probables
+
+    for (nb_essais=0; nb_essais<max_essais; nb_essais++)
+    {
+        printf("Essai %d/%d. ", nb_essais+1, max_essais);
+
+        if (nb_essais!=0)
+        {
+            nb_mots_prob_buffer = liste_mots_prob(mots_probables_buffer, mots_probables, nb_mots_prob, all_data, nb_essais);
+
+            printf("==================PROB==============%d mots\n", nb_mots_prob+1);
+            //affichage_tableau_mots(mots_probables, nb_mots_prob);
+            printf("nb_mots_prob_buffer : %d\n", nb_mots_prob_buffer);
+            //printf("nb_mots_prob%d : %d\n",nb_essais, nb_mots_prob);
+            printf("==================BUFFER==============%d mots\n", nb_mots_prob_buffer+1);
+            //affichage_tableau_mots(mots_probables_buffer, nb_mots_prob_buffer);
+            trouver_mot_h_max(mots, nb_mots, mots_probables_buffer, nb_mots_prob_buffer, essai, liste_patterns);
+
+            //*mots_probables = *mots_probables_buffer;
+            copy_array(mots_probables, nb_mots_prob, mots_probables_buffer, nb_mots_prob_buffer);
+            nb_mots_prob = nb_mots_prob_buffer;
+
+            printf("==================PROB==============%d mots\n", nb_mots_prob+1);
+            //affichage_tableau_mots(mots_probables, nb_mots_prob);
+            printf("==================BUFFER==============%d mots\n", nb_mots_prob_buffer+1);
+            affichage_tableau_mots(mots_probables_buffer, nb_mots_prob_buffer);
+        }
+
+        printf("essai :%s\n",essai);
+
+        remplissage_resultat(mot_cible, essai, resultat, nb_lettres);
+
+        affichage_resultat(essai, resultat, nb_lettres);
+
+        extraction_donnees(essai, resultat, all_data[nb_essais]);
+
+        affichage_donnees(all_data[nb_essais]);
+
+
+        //TEST VICTOIRE
+            if (test_victoire(resultat, nb_lettres)==1)
+            {           //GAGNE
+                affichage_gagne(nb_essais);
+                break;
+            } else {    //PAS GAGNE
+                reset_resultat(resultat, nb_lettres);
+            }
+        
+    }
+        if (nb_essais == max_essais)
+        {
+            affichage_perdu(mot_cible);
+            return -1; //Le joueur a perdu
+        }
+
+    return nb_essais;    
+}
+
+//Lance une partie avec le bot qui ne joue que des mots probables
+int partie_bot2(int max_essais, int nb_lettres, char* mot_cible, char* mots[], int nb_mots, char* nom_fichier)
+{
+    //VARIABLES A MANIPULER
+    char essai[nb_lettres];
+
+    int* resultat = (int*) calloc(nb_lettres,sizeof(int));
+    int nb_essais = 0;
+
+    int** liste_patterns; //Initialisation de liste_patterns
+    init_matrix(&liste_patterns, 243, 5);
+    creation_liste_patterns(5, liste_patterns);
+
+    struct donnees* all_data[max_essais];
+    init_data_array(all_data, max_essais);
+
+    essai[0] = 'a';
+    essai[1] = 'e';
+    essai[2] = 'r';
+    essai[3] = 'e';
+    essai[4] = 'e';
+
+
+    char* mots_probables[nb_mots];
+    char* mots_probables_buffer[nb_mots];
+    int nb_mots_prob = nb_mots;
+    int nb_mots_prob_buffer;
+
+    char* mots_joues[max_essais];
+    mots_joues[0]=essai;
+
+    copy_array(mots_probables, nb_mots, mots, nb_mots); //Avant un quelconque essai, tous les mots sont probables
+
+    for (nb_essais=0; nb_essais<max_essais; nb_essais++)
+    {
+        printf("Essai %d/%d. ", nb_essais+1, max_essais);
+
+        if (nb_essais!=0)
+        {
+            nb_mots_prob_buffer = liste_mots_prob(mots_probables_buffer, mots_probables, nb_mots_prob, all_data, nb_essais);
+
+            printf("==================PROB==============%d mots\n", nb_mots_prob+1);
+            //affichage_tableau_mots(mots_probables, nb_mots_prob);
+            printf("nb_mots_prob_buffer : %d\n", nb_mots_prob_buffer);
+            //printf("nb_mots_prob%d : %d\n",nb_essais, nb_mots_prob);
+            printf("==================BUFFER==============%d mots\n", nb_mots_prob_buffer+1);
+            //affichage_tableau_mots(mots_probables_buffer, nb_mots_prob_buffer);
+            trouver_mot_h_max(mots_probables, nb_mots_prob, mots_probables_buffer, nb_mots_prob_buffer, essai, liste_patterns);
+
+            //*mots_probables = *mots_probables_buffer;
+            copy_array(mots_probables, nb_mots_prob, mots_probables_buffer, nb_mots_prob_buffer);
+            nb_mots_prob = nb_mots_prob_buffer;
+
+            printf("==================PROB==============%d mots\n", nb_mots_prob+1);
+            affichage_tableau_mots(mots_probables, nb_mots_prob);
+            printf("==================BUFFER==============%d mots\n", nb_mots_prob_buffer+1);
+            affichage_tableau_mots(mots_probables_buffer, nb_mots_prob_buffer);
+        }
+
+        printf("essai :%s\n",essai);
+
+        remplissage_resultat(mot_cible, essai, resultat, nb_lettres);
+
+        affichage_resultat(essai, resultat, nb_lettres);
+
+        extraction_donnees(essai, resultat, all_data[nb_essais]);
+
+        affichage_donnees(all_data[nb_essais]);
+
+
+        //TEST VICTOIRE
+            if (test_victoire(resultat, nb_lettres)==1)
+            {           //GAGNE
+                affichage_gagne(nb_essais);
+                break;
+            } else {    //PAS GAGNE
+                reset_resultat(resultat, nb_lettres);
+            }
+        
+    }
+        if (nb_essais == max_essais)
+        {
+            affichage_perdu(mot_cible);
+            return -1; //Le joueur a perdu
+        }
+
+    return nb_essais;    
+}
+
 int main(int argc, char* argv[])
 {
     //AFFICHAGE REGLES ET BIENVENUE ETC
@@ -75,21 +295,20 @@ int main(int argc, char* argv[])
     int nb_lettres;
     int mode;
 
-    printf("Mode de jeu (0: jouer, 1: bot) : ");
+    printf("Mode de jeu (0: jouer, 1: bot max E[h], 2: bot qui ne joue que des coups déduits) : ");
     
     scanf("%d", &mode);
 /*
     printf("Nombre de lettres dans [4;12] :");
     
     scanf("%d", &nb_lettres);
-
+*/
     printf("Nombre d'essais :");
     
     scanf("%d", &max_essais);
-*/
 
     nb_lettres = 5;
-    max_essais = 6;
+    //max_essais = 6;
 
 
     //ACQUISITION MOTS
@@ -97,201 +316,23 @@ int main(int argc, char* argv[])
     int taille_test = 5070;
     char* mots[taille_test];
     int nb_mots = extraction_mots(mots, nom_fichier, nb_lettres);
-    
-    //VARIABLES A MANIPULER
-    char essai[nb_lettres+1]; //+1 pour détecter si l'utilisateur met trop de lettres
 
-    //affichage_tableau_mots(mots, nb_mots);
+    //CHOIX ALEATOIRE DU MOT A DEVINER
+    char* mot_cible = choix_mot(mots,nb_mots);
 
-    //INITIALISATION PARTIE
-    char* mot_cible = "porte";//choix_mot(mots,nb_mots);
-
-    int* resultat = (int*) calloc(nb_lettres,sizeof(int));
-    int nb_essais = 0;
     
     if (mode == 0)
     {
-        //TOURS
-        for (nb_essais=0; nb_essais<max_essais; nb_essais++)
-        {
-            //Le joueur entre sa proposition
-            printf("Essai %d/%d. ", nb_essais+1, max_essais);
-            acquisition_clavier(essai, nb_lettres);
-            
-            //On vérifie si le mot est dans la liste
-            while (test_existence_mot(mots, essai, nb_mots)==0)
-            {
-                printf("Ce mot n'est pas dans la liste !\n");
-                acquisition_clavier(essai, nb_lettres);
-            }
+        partie_joueur(max_essais, nb_lettres, mot_cible, mots, nb_mots);
 
-            remplissage_resultat(mot_cible, essai, resultat, nb_lettres);
-
-            affichage_resultat(essai, resultat, nb_lettres);
-
-            //TEST VICTOIRE
-            if (test_victoire(resultat, nb_lettres)==1)
-            {           //GAGNE
-                affichage_gagne(nb_essais);
-                break;
-            } else {    //PAS GAGNE
-                reset_resultat(resultat, nb_lettres);
-            }
-        }
-
-        if (nb_essais == max_essais)
-        {
-            affichage_perdu(mot_cible);
-        }
-
-    } else if (mode == 1) //on peut tenter des mots non compatibles
+    } else if (mode == 1) //le bot peut tenter des mots non compatibles
     {
-        int** liste_patterns; //Initialisation de liste_patterns
-        init_matrix(&liste_patterns, 243, 5);
-        creation_liste_patterns(5, liste_patterns);
-
-        struct donnees* all_data[max_essais];
-        init_data_array(all_data, max_essais);
-
-        essai[0] = 'a';
-        essai[1] = 'e';
-        essai[2] = 'r';
-        essai[3] = 'e';
-        essai[4] = 'e';
-
-
-        char* mots_probables[5070];
-        char* mots_probables_buffer[5070];
-        int nb_mots_prob = extraction_mots(mots_probables, nom_fichier, nb_lettres);
-
-        nb_mots_prob = nb_mots_prob;
-
-
-        remplissage_resultat(mot_cible, essai, resultat, nb_lettres);
-
-        affichage_resultat(essai, resultat, nb_lettres);
-
-        extraction_donnees(essai, resultat, all_data[0]);
-
-        affichage_donnees(all_data[0]);
-
-        for (nb_essais=0; nb_essais<max_essais; nb_essais++)
-        {
-            printf("Essai %d/%d. ", nb_essais+1, max_essais);
-
-            if (nb_essais!=0)
-            {
-                
-                int nb_mots_prob_buffer = liste_mots_prob(mots_probables_buffer, mots_probables, nb_mots_prob, all_data, nb_essais);
-                printf("==================PROB==============%d mots\n", nb_mots_prob);
-                affichage_tableau_mots(mots_probables, nb_mots_prob);
-                printf("nb_mots_prob_buffer : %d\n", nb_mots_prob_buffer);
-                //printf("nb_mots_prob%d : %d\n",nb_essais, nb_mots_prob);
-                printf("==================BUFFER==============%d mots\n", nb_mots_prob_buffer);
-                affichage_tableau_mots(mots_probables_buffer, nb_mots_prob_buffer);
-                trouver_mot_h_max(mots, nb_mots, mots_probables_buffer, nb_mots_prob_buffer, essai, liste_patterns);
-
-                //*mots_probables = *mots_probables_buffer;
-                copy_array(mots_probables, nb_mots_prob, mots_probables_buffer, nb_mots_prob_buffer);
-                printf("==================PROB==============%d mots\n", nb_mots_prob);
-                affichage_tableau_mots(mots_probables, nb_mots_prob);
-                printf("==================BUFFER==============%d mots\n", nb_mots_prob_buffer);
-                affichage_tableau_mots(mots_probables_buffer, nb_mots_prob_buffer);
-            }
-
-            printf("essai :%s\n",essai);
-
-            remplissage_resultat(mot_cible, essai, resultat, nb_lettres);
-
-            affichage_resultat(essai, resultat, nb_lettres);
-
-            //TEST VICTOIRE
-                if (test_victoire(resultat, nb_lettres)==1)
-                {           //GAGNE
-                    affichage_gagne(nb_essais);
-                    break;
-                } else {    //PAS GAGNE
-                    reset_resultat(resultat, nb_lettres);
-                }
-            
-            
-        }
-            if (nb_essais == max_essais)
-            {
-                affichage_perdu(mot_cible);
-            }
-            /*
-    } else if (mode == 2) //on ne tente que des mots probables
+        partie_bot1(max_essais, nb_lettres, mot_cible, mots, nb_mots, nom_fichier);     
+    } 
+    else if (mode == 2) //le bot ne tente que des mots probables
     {
-        int** liste_patterns; //Initialisation de liste_patterns
-        init_matrix(&liste_patterns, 243, 5);
-        creation_liste_patterns(5, liste_patterns);
-
-        essai[0] = 'a';
-        essai[1] = 'e';
-        essai[2] = 'r';
-        essai[3] = 'e';
-        essai[4] = 'e';
-
-
-        char* mots_probables[5070];
-        char* mots_probables_buffer[5070];
-        int nb_mots_prob = extraction_mots(mots_probables, nom_fichier, nb_lettres);
-
-        nb_mots_prob = nb_mots_prob;
-
-        struct donnees* data = init_data();
-
-        //On détecte les lettres à mettre en vert
-        test_place(mot_cible,essai,resultat,nb_lettres);
-
-        //on détecte les lettres à mettre en jaune
-        test_lettre(mot_cible,essai,resultat, nb_lettres);
-
-        affichage_resultat(essai, resultat, nb_lettres);
-
-        extraction_donnees(essai, resultat, data);
-
-        affichage_donnees(data);
-
-        for (nb_essais=0; nb_essais<max_essais; nb_essais++)
-        {
-            printf("Essai %d/%d. ", nb_essais+1, max_essais);
-
-            int nb_mots_prob_buffer = liste_mots_prob(mots_probables_buffer, mots_probables, nb_mots_prob, all_data, nb_essais);
-            //affichage_tableau_mots(mots_probables, nb_mots_prob);
-            printf("nb_mots_prob_buffer : %d\n", nb_mots_prob_buffer);
-            //printf("nb_mots_prob%d : %d\n",nb_essais, nb_mots_prob);
-            //affichage_tableau_mots(mots_probables_buffer, nb_mots_prob_buffer);
-            trouver_mot_h_max(mots, nb_mots, mots_probables_buffer, nb_mots_prob_buffer, essai, liste_patterns);
-
-            printf("essai :%s\n",essai);
-            test_place(mot_cible,essai,resultat,nb_lettres);
-
-            //on détecte les lettres à mettre en jaune
-            test_lettre(mot_cible,essai,resultat, nb_lettres);
-
-            affichage_resultat(essai, resultat, nb_lettres);
-
-            //TEST VICTOIRE
-                if (test_victoire(resultat, nb_lettres)==1)
-                {           //GAGNE
-                    affichage_gagne(nb_essais);
-                    break;
-                } else {    //PAS GAGNE
-                    reset_resultat(resultat, nb_lettres);
-                }
-            
-            *mots_probables = *mots_probables_buffer;
-        }
-            if (nb_essais == max_essais)
-            {
-                affichage_perdu(mot_cible);
-            }
-            */
+        partie_bot2(max_essais, nb_lettres, mot_cible, mots, nb_mots, nom_fichier); 
     }
-
-    free(resultat);
 
     return 0;
 }

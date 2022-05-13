@@ -47,13 +47,32 @@ int liste_mots_prob(char* mots_probables[], char* mots_a_tester[], int nb_mots_a
     else return indice_mot_prob-1; //Renvoie le nombre de mots compatibles
 }
 
-//Retourne le nombre de mots compatibles avec les données
-int nombre_mots_prob(char* mots_a_tester[], int nb_mots_a_tester, struct donnees* data)
+//Retourne le nombre de mots compatibles avec un struct donnees
+int nombre_mots_prob1(char* mots_a_tester[], int nb_mots_a_tester, struct donnees* data)
 {
     int nb_mots_prob = 0;
     for (int i=0; i<nb_mots_a_tester; i++)
     {
         if (verif_compatibilite(mots_a_tester[i], data) == 1)
+        {
+            /* VERIF DES TESTS DE LETTRES
+            printf("%s comp avec data :\n", mots_a_tester[i]);
+            affichage_donnees(data);
+            */
+            nb_mots_prob++;
+        }
+    }
+    //printf("nb_mots_prob=%d\n",nb_mots_prob);
+    return nb_mots_prob-1; //Renvoie le nombre de mots compatibles
+}
+
+//Retourne le nombre de mots compatibles avec un ensemble de struct donnees
+int nombre_mots_prob(char* mots_a_tester[], int nb_mots_a_tester, struct donnees* all_data[], int nb_essais)
+{
+    int nb_mots_prob = 0;
+    for (int i=0; i<nb_mots_a_tester; i++)
+    {
+        if (verif_compatibilite_complete(mots_a_tester[i], all_data, nb_essais) == 1)
         {
             /* VERIF DES TESTS DE LETTRES
             printf("%s comp avec data :\n", mots_a_tester[i]);
@@ -78,18 +97,18 @@ float calcul_entropie_mot(char* mot, char* mots_a_tester[], int nb_mots_a_tester
         struct donnees* data = init_data();
         
         extraction_donnees(mot, liste_patterns[j], data);
-
+        /*pour verif valeurs
         printf("%s\n",mot);
         affichage_debug(liste_patterns[j],5);
         affichage_donnees(data);
-        
-        //printf("nb_mots_probables : %d\n", nombre_mots_prob(mots_a_tester, nb_mots_a_tester, data));
-        p = ((float) nombre_mots_prob(mots_a_tester, nb_mots_a_tester, data)+1)/nb_mots_a_tester;
+        */
+        //printf("nb_mots_probables : %d\n", nombre_mots_prob1(mots_a_tester, nb_mots_a_tester, data));
+        p = ((float) nombre_mots_prob1(mots_a_tester, nb_mots_a_tester, data)+1)/nb_mots_a_tester;
         //printf("p = %f\n",p);
         if (p!=0) h = h+p*log2f(1/p); //Je note h mais on calcule l'espérance de l'entropie h en réalité
         //free_data(data); //enlever ce free ne crée pas de fuite de mémoire
     }
-    printf("H(%s) = %f\n", mot, h);
+    //printf("H(%s) = %f\n", mot, h);
     return h;
 }
 
@@ -136,7 +155,7 @@ float trouver_mot_h_max(char* dico[], int nb_mots_dico, char* mots_a_tester[], i
     float h_max = 0;
     for (int k=0; k<nb_mots_dico; k++)
     {
-        printf("%d : ",k);
+        //printf("%d | ",k);
         float h_temp = calcul_entropie_mot(dico[k], mots_a_tester, nb_mots_a_tester, liste_patterns);
         if (h_temp>h_max)
         {
@@ -144,7 +163,7 @@ float trouver_mot_h_max(char* dico[], int nb_mots_dico, char* mots_a_tester[], i
             strcpy(mot_h_max, dico[k]);
             //*mot_h_max = mots_a_tester[k];
             printf_rouge();
-            printf("%s nv max : %f\n",mot_h_max, h_max);
+            //printf("%s nv max : %f\n",mot_h_max, h_max);
             printf_standard();
         }
     }
@@ -192,7 +211,7 @@ void affichage_liste_patterns(int **liste_patterns)
     printf("=============\n");
 }
 
-int main(int argc, char* argv[])
+int mainen(int argc, char* argv[])
 {
     //FAIRE STRUCT DONNEES
 
@@ -210,7 +229,7 @@ int main(int argc, char* argv[])
     init_matrix(&liste_patterns, 243, 5);
     creation_liste_patterns(5, liste_patterns);
 
-    /* TEST extraction_donnees + nombre_mots_prob
+    /* TEST extraction_donnees + nombre_mots_prob1
     affichage_resultat(essai, resultat, 5);
 
     extraction_donnees(essai, resultat, data);

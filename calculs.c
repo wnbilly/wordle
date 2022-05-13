@@ -278,30 +278,18 @@ void copy_array(char* array_dest[], int size_dest, char* array_src[], int size_s
 
     for(int i=0; i<size_src; i++)
     {
-        strcpy(array_dest[i], array_src[i]);
+        /*
+        printf("i : %d\n", i);
+        printf("array_dest[i] = %s\n",array_dest[i]);
+        printf("array_src[i] = %s\n",array_src[i]);
+        */
+        array_dest[i] = array_src[i];
     }
 }
 
 int mainca(int argc, char* argv[])
 {
-    //FAIRE STRUCT DONNEES
-
     //struct donnees* data = init_data();
-
-
-    //affichage_tableau_mots(mots_probables,nb_mots_probables);
-
-    /*TEST CORRES
-
-    char lst_lettres[] = {'e', 'e'};
-    int lst_etats[] = {2, 1, -1, -1, -1}; //Equivalent de resultat dans les autres codes
-    int lst_pos[] = {1, 3, -1, -1, -1};
-    char lst_lettres_ban[] = {'a', 'r', 'e'};
-    int occ_ban
-    */
-
-    //char* mot_cible = "porte";
-    //char* mot_test = "alrto";
 
     char* essai = "aeree";
     int resultat[5] = {0,2,0,1,0};
@@ -323,6 +311,28 @@ int mainca(int argc, char* argv[])
     printf("corres_jaune : %d\n",correspondance_ltr_jaune(mot_test, data));
     printf("corres_ban: %d\n",test_ltr_ban(mot_test, data));
     */
+
+    char* array_src[2];
+    array_src[0]="aaaaa";
+    array_src[1]="bbbbb";
+
+    char* array_dest[4];
+    array_dest[0]="aloha";
+    array_dest[1]="salut";
+    array_dest[2]="hello";
+    array_dest[3]="ensta";
+
+    printf("SRC\n");
+    affichage_tableau_mots(array_src, 2);
+    printf("DEST\n");
+    affichage_tableau_mots(array_dest, 4);
+    printf("/COPY\n");
+    copy_array(array_dest, 4, array_src, 2);
+    array_src[1]="error";
+    printf("SRC\n");
+    affichage_tableau_mots(array_src, 2);
+    printf("DEST\n");
+    affichage_tableau_mots(array_dest, 4);
 
     return 0;
 }
