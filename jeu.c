@@ -139,6 +139,9 @@ int partie_bot1(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
     int nb_mots_prob = nb_mots;
     int nb_mots_prob_buffer;
 
+    char* mots_joues[max_essais];
+    mots_joues[0]=essai;
+
     copy_array(mots_probables, nb_mots, mots, nb_mots); //Avant un quelconque essai, tous les mots sont probables
 
     for (nb_essais=0; nb_essais<max_essais; nb_essais++)
@@ -147,7 +150,7 @@ int partie_bot1(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
 
         if (nb_essais!=0)
         {
-            nb_mots_prob_buffer = liste_mots_prob(mots_probables_buffer, mots_probables, nb_mots_prob, all_data, nb_essais);
+            nb_mots_prob_buffer = liste_mots_prob(mots_probables_buffer, mots_probables, nb_mots_prob, all_data, mots_joues, nb_essais);
 
             printf("==================PROB==============%d mots\n", nb_mots_prob+1);
             //affichage_tableau_mots(mots_probables, nb_mots_prob);
@@ -236,7 +239,7 @@ int partie_bot2(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
 
         if (nb_essais!=0)
         {
-            nb_mots_prob_buffer = liste_mots_prob(mots_probables_buffer, mots_probables, nb_mots_prob, all_data, nb_essais);
+            nb_mots_prob_buffer = liste_mots_prob(mots_probables_buffer, mots_probables, nb_mots_prob, all_data, mots_joues, nb_essais);
 
             printf("==================PROB==============%d mots\n", nb_mots_prob+1);
             //affichage_tableau_mots(mots_probables, nb_mots_prob);

@@ -12,6 +12,8 @@ struct donnees{
 
 int lettre_est_dans(char* mot, char lettre);
 
+int mot_est_dans(char* liste[], int taille, char* mot);
+
 int nb_occurences(char* mot, char lettre);
 
 int nb_occurences_ban(char* essai, int* resultat, char lettre);

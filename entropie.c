@@ -31,13 +31,14 @@ int liste_mots_prob1(char* mots_probables[], char* mots_a_tester[], int nb_mots_
     else return indice_mot_prob-1; //Renvoie le nombre de mots compatibles
 }
 
+
 //Remplit la liste mots_probables avec l'ensemble des données parmi les mots_a_tester et renvoie le nombre de mots probables
-int liste_mots_prob(char* mots_probables[], char* mots_a_tester[], int nb_mots_a_tester, struct donnees* all_data[], int nb_essais)
+int liste_mots_prob(char* mots_probables[], char* mots_a_tester[], int nb_mots_a_tester, struct donnees* all_data[], char* mots_bannis[], int nb_essais)
 {
     int indice_mot_prob = 0;
     for (int i=0; i<nb_mots_a_tester; i++)
     {
-        if (verif_compatibilite_complete(mots_a_tester[i], all_data, nb_essais) == 1)
+        if (verif_compatibilite_complete(mots_a_tester[i], all_data, nb_essais) == 1 && mot_est_dans(mots_bannis, nb_essais, mots_a_tester[i])==1)
         {
             mots_probables[indice_mot_prob] = mots_a_tester[i];
             indice_mot_prob++;
@@ -63,7 +64,7 @@ int nombre_mots_prob1(char* mots_a_tester[], int nb_mots_a_tester, struct donnee
         }
     }
     //printf("nb_mots_prob=%d\n",nb_mots_prob);
-    return nb_mots_prob-1; //Renvoie le nombre de mots compatibles
+    return nb_mots_prob; //Renvoie le nombre de mots compatibles
 }
 
 //Retourne le nombre de mots compatibles avec un ensemble de struct donnees
@@ -82,7 +83,7 @@ int nombre_mots_prob(char* mots_a_tester[], int nb_mots_a_tester, struct donnees
         }
     }
     //printf("nb_mots_prob=%d\n",nb_mots_prob);
-    return nb_mots_prob-1; //Renvoie le nombre de mots compatibles
+    return nb_mots_prob; //Renvoie le nombre de mots compatibles
 }
 
 //Calcule l'entropie de mot relativement aux mots_a_tester et au nombre de mots a tester
@@ -236,7 +237,7 @@ int mainen(int argc, char* argv[])
 
     affichage_donnees(data);
 
-    int nb_mots_probables = liste_mots_prob(mots_probables, mots_a_tester, nb_mots_a_tester, data);
+    int nb_mots_probables = liste_mots_prob1(mots_probables, mots_a_tester, nb_mots_a_tester, data);
 
     printf("nb_mots_probables : %d\n", nb_mots_probables+1);
 

@@ -25,6 +25,16 @@ int lettre_est_dans(char* mot, char lettre) //Renvoie 1 si la lettre est dans le
     return 0;
 }
 
+//Retourne 1 si le mot est dans la liste,0 sinon
+int mot_est_dans(char* liste[], int taille, char* mot)
+{
+    for (int i=0; i<taille; i++)
+    {
+        if (liste[i]==mot) return 0;
+    }
+    return 1;
+}
+
 //Retourne le nombre d'occurences d'une lettre dans un mot
 int nb_occurences(char* mot, char lettre)
 {
