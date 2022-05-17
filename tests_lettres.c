@@ -115,7 +115,7 @@ void test_lettre(char* mot, char* essai, int resultat[], int nb_lettres)
     free(trace);
 }
 
-//Vérifie si le mot joué par le joueur est dans le dictionnaire du jeu
+//Vérifie si le mot joué par le joueur est dans le dictionnaire du jeus
 int test_existence_mot(char *mots[], char* essai, int nb_mots)
 {
     for (int i=0; i<nb_mots; i++)   //AMELIORABLE SI LA LISTE EST TRIEE PAR ORDRE ALPHABETIQUE

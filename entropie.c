@@ -28,7 +28,7 @@ int liste_mots_prob1(char* mots_probables[], char* mots_a_tester[], int nb_mots_
         }
     }
     if (indice_mot_prob==0) return 0;
-    else return indice_mot_prob-1; //Renvoie le nombre de mots compatibles
+    else return indice_mot_prob; //Renvoie le nombre de mots compatibles
 }
 
 
@@ -38,14 +38,14 @@ int liste_mots_prob(char* mots_probables[], char* mots_a_tester[], int nb_mots_a
     int indice_mot_prob = 0;
     for (int i=0; i<nb_mots_a_tester; i++)
     {
-        if (verif_compatibilite_complete(mots_a_tester[i], all_data, nb_essais) == 1 && mot_est_dans(mots_bannis, nb_essais, mots_a_tester[i])==1)
+        if (verif_compatibilite_complete(mots_a_tester[i], all_data, nb_essais-1) == 1 && mot_est_dans(mots_bannis, nb_essais, mots_a_tester[i])==0)
         {
             mots_probables[indice_mot_prob] = mots_a_tester[i];
             indice_mot_prob++;
         }
     }
     if (indice_mot_prob==0) return 0;
-    else return indice_mot_prob-1; //Renvoie le nombre de mots compatibles
+    else return indice_mot_prob; //Renvoie le nombre de mots compatibles
 }
 
 //Retourne le nombre de mots compatibles avec un struct donnees
@@ -104,9 +104,9 @@ float calcul_entropie_mot(char* mot, char* mots_a_tester[], int nb_mots_a_tester
         affichage_donnees(data);
         */
         //printf("nb_mots_probables : %d\n", nombre_mots_prob1(mots_a_tester, nb_mots_a_tester, data));
-        p = ((float) nombre_mots_prob1(mots_a_tester, nb_mots_a_tester, data)+1)/nb_mots_a_tester;
+        p = ((float) nombre_mots_prob1(mots_a_tester, nb_mots_a_tester, data))/nb_mots_a_tester;
         //printf("p = %f\n",p);
-        if (p!=0) h = h+p*log2f(1/p); //Je note h mais on calcule l'espérance de l'entropie h en réalité
+        if (p!=0) h = h-p*log2f(p); //Je note h mais on calcule l'espérance de l'entropie h en réalité
         //free_data(data); //enlever ce free ne crée pas de fuite de mémoire
     }
     //printf("H(%s) = %f\n", mot, h);
@@ -153,7 +153,7 @@ void init_matrix(int ***matrix, int n, int p) //Pour l'utiliser, on initialise i
 //Calcul entropie en testant les mots du gros dico et en trouvant les mots compatibles dans la liste des mots compatibles
 float trouver_mot_h_max(char* dico[], int nb_mots_dico, char* mots_a_tester[], int nb_mots_a_tester, char* mot_h_max, int** liste_patterns)
 {
-    float h_max = 0;
+    float h_max = -1; //On commence à -1 car s'il ne reste qu'un mot, son entropie sera 0>1
     for (int k=0; k<nb_mots_dico; k++)
     {
         //printf("%d | ",k);

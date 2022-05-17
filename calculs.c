@@ -30,9 +30,9 @@ int mot_est_dans(char* liste[], int taille, char* mot)
 {
     for (int i=0; i<taille; i++)
     {
-        if (liste[i]==mot) return 0;
+        if (liste[i]==mot) return 1;
     }
-    return 1;
+    return 0;
 }
 
 //Retourne le nombre d'occurences d'une lettre dans un mot
@@ -282,7 +282,7 @@ void copy_array(char* array_dest[], int size_dest, char* array_src[], int size_s
 
     if (sizeof(array_dest[0])!=sizeof(array_src[0]))
     {
-        printf("Erreur : array_dest et array_src n'ont pas les mêmes tailles de mots\n");
+        printf("Erreur : array_dest[%d] et array_src[%d] n'ont pas les mêmes tailles de mots\n", size_dest, size_src);
         exit(0);
     }
 
@@ -301,8 +301,8 @@ int mainca(int argc, char* argv[])
 {
     //struct donnees* data = init_data();
 
-    char* essai = "aeree";
-    int resultat[5] = {0,2,0,1,0};
+    char* essai = "mande";
+    int resultat[5] = {0,2,2,2,2};
     int max_essais = 6;
 
     affichage_resultat(essai, resultat, 5);
@@ -314,14 +314,16 @@ int mainca(int argc, char* argv[])
 
     affichage_donnees(all_data[2]);
 
-    correspondance_ltr_jaune("teint", all_data[2]);
+    printf("compatible : %d\n", verif_compatibilite("bande", all_data[2]));
+
+    correspondance_ltr_jaune("ilots", all_data[2]);
 
     /*
     printf("corres_verte : %d\n",correspondance_ltr_verte(mot_test, data));
     printf("corres_jaune : %d\n",correspondance_ltr_jaune(mot_test, data));
     printf("corres_ban: %d\n",test_ltr_ban(mot_test, data));
     */
-
+/*
     char* array_src[2];
     array_src[0]="aaaaa";
     array_src[1]="bbbbb";
@@ -343,6 +345,6 @@ int mainca(int argc, char* argv[])
     affichage_tableau_mots(array_src, 2);
     printf("DEST\n");
     affichage_tableau_mots(array_dest, 4);
-
+*/
     return 0;
 }

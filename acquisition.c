@@ -10,7 +10,7 @@
 
 void affichage_tableau_mots(char* tableau[], int taille) //Pour test/debug
 {
-    for (int j=0; j<=taille; j++)
+    for (int j=0; j<taille; j++)
     {
         //printf("%d\n",j);
         printf("%s\n",tableau[j]);
