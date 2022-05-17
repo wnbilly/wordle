@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "acquisition.h"
 #include "tests_lettres.h"
 #include "calculs.h"
@@ -291,7 +292,6 @@ int partie_bot3(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
 {
     //VARIABLES A MANIPULER
     
-
     int* resultat = (int*) calloc(nb_lettres,sizeof(int));
     int nb_essais = 0;
 
@@ -307,7 +307,7 @@ int partie_bot3(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
     essai[3] = 'e';
     essai[4] = 'e';
 */
-    char* essai = choix_mot(mots, nb_mots);
+    char* essai;
 
     char* mots_probables[nb_mots];
     char* mots_probables_buffer[nb_mots];
@@ -319,9 +319,15 @@ int partie_bot3(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
 
     copy_array(mots_probables, nb_mots, mots, nb_mots); //Avant un quelconque essai, tous les mots sont probables
 
+    srand(time(0));
+    int random;
+
     for (nb_essais=0; nb_essais<max_essais; nb_essais++)
     {
         printf("Essai %d/%d. ", nb_essais+1, max_essais);
+
+        random = rand()%nb_mots;
+        essai = mots[random];
 
         if (nb_essais>=0)
         {
@@ -338,7 +344,6 @@ int partie_bot3(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
 
             copy_array(mots_probables, nb_mots_prob, mots_probables_buffer, nb_mots_prob_buffer);
             nb_mots_prob = nb_mots_prob_buffer;
-            strcpy(essai, choix_mot(mots_probables, nb_mots_prob));
         }
 
         printf("essai :%s\n",essai);
@@ -359,9 +364,7 @@ int partie_bot3(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
             } else {    //PAS GAGNE
                 reset_resultat(resultat, nb_lettres);
             }
-        
     }
-
         if (nb_essais == max_essais)
         {
             affichage_perdu(mot_cible);

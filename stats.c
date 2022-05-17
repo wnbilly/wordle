@@ -38,10 +38,9 @@ void stats_bot2(int max_essais, int nb_lettres, char* mots[], int nb_mots, char*
     moyenne_nb_essais = moyenne_nb_essais/nb_gagne;
 
     clock_t t2=clock();
-    float temps = (float)(t2-t1);
+    float temps = (float)(t2-t1)*(CLOCKS_PER_SEC*taille_echantillon);
     printf_rouge();
-    printf("Temps d'exécution : %f s\n", temps);
-    printf("Sur %d parties, le bot2 en a gagné %d en %.3f essais en moyenne.\n", taille_echantillon, nb_gagne, moyenne_nb_essais);
+    printf("Sur %d parties, le bot2 en a gagné %d en %.2f essais et %.3f s en moyenne.\n", taille_echantillon, nb_gagne, moyenne_nb_essais, temps/1000);
     printf_standard();
 }
 
@@ -56,7 +55,7 @@ int main(int argc, char* argv[])
     char* mots[taille_test];
     int nb_mots = extraction_mots(mots, nom_fichier, nb_lettres);
 
-    int taille_echantillon = 50;
+    int taille_echantillon = 200;
 
     stats_bot2(max_essais, nb_lettres, mots, nb_mots, nom_fichier, taille_echantillon);
 
