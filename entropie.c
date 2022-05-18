@@ -98,14 +98,7 @@ float calcul_entropie_mot(char* mot, char* mots_a_tester[], int nb_mots_a_tester
         struct donnees* data = init_data();
         
         extraction_donnees(mot, liste_patterns[j], data);
-        /*pour verif valeurs
-        printf("%s\n",mot);
-        affichage_debug(liste_patterns[j],5);
-        affichage_donnees(data);
-        */
-        //printf("nb_mots_probables : %d\n", nombre_mots_prob1(mots_a_tester, nb_mots_a_tester, data));
         p = ((float) nombre_mots_prob1(mots_a_tester, nb_mots_a_tester, data))/nb_mots_a_tester;
-        //printf("p = %f\n",p);
         if (p!=0) h = h-p*log2f(p); //Je note h mais on calcule l'espérance de l'entropie h en réalité
         //free_data(data); //enlever ce free ne crée pas de fuite de mémoire
     }
@@ -162,13 +155,10 @@ float trouver_mot_h_max(char* dico[], int nb_mots_dico, char* mots_a_tester[], i
         {
             h_max = h_temp;
             strcpy(mot_h_max, dico[k]);
-            //*mot_h_max = mots_a_tester[k];
-            printf_rouge();
             //printf("%s nv max : %f\n",mot_h_max, h_max);
-            printf_standard();
         }
     }
-    printf("mot_h_max : %s avec %f\n", mot_h_max, h_max);
+    //printf("mot_h_max : %s avec %f\n", mot_h_max, h_max);
     return h_max;
 }
 

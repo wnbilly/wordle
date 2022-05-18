@@ -196,9 +196,11 @@ int partie_bot1(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
         if (nb_essais == max_essais)
         {
             affichage_perdu(mot_cible);
+            free(resultat);;
             return -1; //Le joueur a perdu
         }
 
+    free(resultat);
     return nb_essais+1;    
 }
 
@@ -265,7 +267,7 @@ int partie_bot2(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
 
         extraction_donnees(essai, resultat, data);
 
-        affichage_donnees(data);
+        //affichage_donnees(data);
 
         //TEST VICTOIRE
             if (test_victoire(resultat, nb_lettres)==1)
@@ -281,9 +283,11 @@ int partie_bot2(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
         if (nb_essais == max_essais)
         {
             affichage_perdu(mot_cible);
+            free(resultat);
             return -1; //Le joueur a perdu
         }
 
+    free(resultat);
     return nb_essais+1;    
 }
 
@@ -313,21 +317,17 @@ int partie_bot3(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
     char* mots_probables_buffer[nb_mots];
     int nb_mots_prob = nb_mots;
     int nb_mots_prob_buffer;
-
+    nb_mots_prob_buffer = nb_mots_prob;
     //affichage_tableau_mots(mots, nb_mots);
     printf("==========\n");
 
     copy_array(mots_probables, nb_mots, mots, nb_mots); //Avant un quelconque essai, tous les mots sont probables
 
-    srand(time(0));
-    int random;
-
     for (nb_essais=0; nb_essais<max_essais; nb_essais++)
     {
         printf("Essai %d/%d. ", nb_essais+1, max_essais);
 
-        random = rand()%nb_mots;
-        essai = mots[random];
+        essai = choix_mot(mots_probables, nb_mots_prob);
 
         if (nb_essais>=0)
         {
@@ -352,9 +352,9 @@ int partie_bot3(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
 
         affichage_resultat(essai, resultat, nb_lettres);
 
-        extraction_donnees(essai, resultat, data);
+        //extraction_donnees(essai, resultat, data);
 
-        affichage_donnees(data);
+        //affichage_donnees(data);
 
         //TEST VICTOIRE
             if (test_victoire(resultat, nb_lettres)==1)
@@ -374,8 +374,12 @@ int partie_bot3(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
     return nb_essais+1;    
 }
 
-int mainje(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
+
+
+    srand(time(NULL));
+
     //AFFICHAGE REGLES ET BIENVENUE ETC
 
     //PARAMETRES DE LA PARTIE

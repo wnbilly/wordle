@@ -55,7 +55,7 @@ int extraction_mots(char* mots[], char* nom_fichier, int nb_lettres) //FONCTION 
 
 char* choix_mot(char* mots[], int nb_mots)
 {
-    srand(time(0));
+    if (nb_mots==0) return "train"; //Pour éviter erreur aléatoire de %0
     int random = rand()%nb_mots;
     //printf("%de mot choisi : %s\n",random,mots[random]);
     return mots[random];
