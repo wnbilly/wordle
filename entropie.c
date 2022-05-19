@@ -38,7 +38,7 @@ int liste_mots_prob(char* mots_probables[], char* mots_a_tester[], int nb_mots_a
     int indice_mot_prob = 0;
     for (int i=0; i<nb_mots_a_tester; i++)
     {
-        if (verif_compatibilite_complete(mots_a_tester[i], all_data, nb_essais-1) == 1 && mot_est_dans(mots_bannis, nb_essais, mots_a_tester[i])==0)
+        if (verif_compatibilite_complete(mots_a_tester[i], all_data, nb_essais) == 1 && mot_est_dans(mots_bannis, nb_essais, mots_a_tester[i])==0)
         {
             mots_probables[indice_mot_prob] = mots_a_tester[i];
             indice_mot_prob++;

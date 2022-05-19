@@ -112,7 +112,7 @@ int partie_joueur(int max_essais, int nb_lettres, char* mot_cible, char* mots[],
     return nb_essais;
 }
 
-//Lance une partie jouée par un humain, retourne le nombre de coups pour gagner (-1 si perdu)
+//Lance une partie jouée par le bot qui peut jouer des mots non probables, retourne le nombre de coups pour gagner (-1 si perdu)
 int partie_bot1(int max_essais, int nb_lettres, char* mot_cible, char* mots[], int nb_mots, char* nom_fichier)
 {
     //VARIABLES A MANIPULER
@@ -154,12 +154,12 @@ int partie_bot1(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
             nb_mots_prob_buffer = liste_mots_prob(mots_probables_buffer, mots_probables, nb_mots_prob, all_data, mots_joues, nb_essais);
 
             printf("==================PROB==============%d mots\n", nb_mots_prob);
-            //affichage_tableau_mots(mots_probables, nb_mots_prob);
+            affichage_tableau_mots(mots_probables, nb_mots_prob);
             printf("nb_mots_prob_buffer : %d\n", nb_mots_prob_buffer);
             //printf("nb_mots_prob%d : %d\n",nb_essais, nb_mots_prob);
             printf("==================BUFFER==============%d mots\n", nb_mots_prob_buffer);
-            //affichage_tableau_mots(mots_probables_buffer, nb_mots_prob_buffer);
-            trouver_mot_h_max(mots, nb_mots, mots_probables_buffer, nb_mots_prob_buffer, essai, liste_patterns);
+            affichage_tableau_mots(mots_probables_buffer, nb_mots_prob_buffer);
+            
 
             //*mots_probables = *mots_probables_buffer;
             copy_array(mots_probables, nb_mots_prob, mots_probables_buffer, nb_mots_prob_buffer);
@@ -169,6 +169,8 @@ int partie_bot1(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
             //affichage_tableau_mots(mots_probables, nb_mots_prob);
             printf("==================BUFFER==============%d mots\n", nb_mots_prob_buffer);
             affichage_tableau_mots(mots_probables_buffer, nb_mots_prob_buffer+1);
+
+            trouver_mot_h_max(mots, nb_mots, mots_probables_buffer, nb_mots_prob_buffer, essai, liste_patterns);
         }
 
         printf("essai :%s\n",essai);
@@ -219,10 +221,10 @@ int partie_bot2(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
 
     struct donnees* data = init_data();
 
-    essai[0] = 'a';
-    essai[1] = 'e';
+    essai[0] = 't';
+    essai[1] = 'a';
     essai[2] = 'r';
-    essai[3] = 'e';
+    essai[3] = 'i';
     essai[4] = 'e';
 
 
@@ -327,7 +329,7 @@ int partie_bot3(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
     {
         printf("Essai %d/%d. ", nb_essais+1, max_essais);
 
-        essai = choix_mot(mots_probables, nb_mots_prob);
+        essai = choix_mot(mots_probables, nb_mots_prob+1); //choix_mot(mots, nb_mots); pour bot random dans le dico
 
         if (nb_essais>=0)
         {
@@ -352,7 +354,7 @@ int partie_bot3(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
 
         affichage_resultat(essai, resultat, nb_lettres);
 
-        //extraction_donnees(essai, resultat, data);
+        extraction_donnees(essai, resultat, data);
 
         //affichage_donnees(data);
 
@@ -374,11 +376,106 @@ int partie_bot3(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
     return nb_essais+1;    
 }
 
-int main(int argc, char* argv[])
+//Le bot joue TRAIN puis COULE puis le bot2 prend le relais
+int partie_bot4(int max_essais, int nb_lettres, char* mot_cible, char* mots[], int nb_mots, char* nom_fichier)
+{
+    //VARIABLES A MANIPULER
+    char essai[nb_lettres];
+
+    int* resultat = (int*) calloc(nb_lettres,sizeof(int));
+    int nb_essais = 0;
+
+    int** liste_patterns; //Initialisation de liste_patterns
+    init_matrix(&liste_patterns, 243, 5);
+    creation_liste_patterns(5, liste_patterns);
+
+    struct donnees* data = init_data();
+
+    essai[0] = 't';
+    essai[1] = 'r';
+    essai[2] = 'a';
+    essai[3] = 'i';
+    essai[4] = 'n';
+
+
+    char* mots_probables[nb_mots];
+    char* mots_probables_buffer[nb_mots];
+    int nb_mots_prob = nb_mots;
+    int nb_mots_prob_buffer;
+
+    //affichage_tableau_mots(mots, nb_mots);
+    printf("==========\n");
+
+    copy_array(mots_probables, nb_mots, mots, nb_mots); //Avant un quelconque essai, tous les mots sont probables
+
+    for (nb_essais=0; nb_essais<max_essais; nb_essais++)
+    {
+        printf("Essai %d/%d. ", nb_essais+1, max_essais);
+
+        if (nb_essais!=0)
+        {
+            nb_mots_prob_buffer = liste_mots_prob1(mots_probables_buffer, mots_probables, nb_mots_prob+1, data);
+/*
+            if (nb_essais>1)
+            {
+                printf("==================PROB-1==============%d mots\n", nb_mots_prob);
+                affichage_tableau_mots(mots_probables, nb_mots_prob);
+            }
+            */
+            //printf("==================PROB==============%d mots\n", nb_mots_prob_buffer);
+            //affichage_tableau_mots(mots_probables_buffer, nb_mots_prob_buffer);
+
+            copy_array(mots_probables, nb_mots_prob, mots_probables_buffer, nb_mots_prob_buffer);
+            nb_mots_prob = nb_mots_prob_buffer;
+
+            if (nb_essais==1)
+            {
+                essai[0] = 'c';
+                essai[1] = 'o';
+                essai[2] = 'u';
+                essai[3] = 'l';
+                essai[4] = 'e';
+            }
+            else trouver_mot_h_max(mots_probables_buffer, nb_mots_prob_buffer, mots_probables_buffer, nb_mots_prob_buffer, essai, liste_patterns);
+        }
+
+        printf("essai :%s\n",essai);
+
+        remplissage_resultat(mot_cible, essai, resultat, nb_lettres);
+
+        affichage_resultat(essai, resultat, nb_lettres);
+
+        extraction_donnees(essai, resultat, data);
+
+        //affichage_donnees(data);
+
+        //TEST VICTOIRE
+            if (test_victoire(resultat, nb_lettres)==1)
+            {           //GAGNE
+                affichage_gagne(nb_essais);
+                break;
+            } else {    //PAS GAGNE
+                reset_resultat(resultat, nb_lettres);
+            }
+        
+    }
+
+        if (nb_essais == max_essais)
+        {
+            affichage_perdu(mot_cible);
+            free(resultat);
+            return -1; //Le joueur a perdu
+        }
+
+    free(resultat);
+    return nb_essais+1;    
+}
+
+int mainje(int argc, char* argv[])
 {
 
 
-    srand(time(NULL));
+    srand(time(0));
 
     //AFFICHAGE REGLES ET BIENVENUE ETC
 
@@ -411,26 +508,27 @@ int main(int argc, char* argv[])
     //CHOIX ALEATOIRE DU MOT A DEVINER
     char* mot_cible = choix_mot(mots,nb_mots);
 
-
-    
-    if (mode == 0)
+    switch (mode)
     {
-        partie_joueur(max_essais, nb_lettres, mot_cible, mots, nb_mots);
-
-    } else if (mode == 1) //le bot peut tenter des mots non compatibles
-    {
-        printf("mot_cible : %s\n", mot_cible);
-        partie_bot1(max_essais, nb_lettres, mot_cible, mots, nb_mots, nom_fichier);     
-    } 
-    else if (mode == 2) //le bot ne tente que des mots probables
-    {
-        printf("mot_cible : %s\n", mot_cible);
-        partie_bot2(max_essais, nb_lettres, mot_cible, mots, nb_mots, nom_fichier); 
-    }
-    else if (mode == 3) //le bot tente aléatoirement parmi les mots probables
-    {
-        printf("mot_cible : %s\n", mot_cible);
-        partie_bot3(max_essais, nb_lettres, mot_cible, mots, nb_mots, nom_fichier); 
+        case 0:
+            partie_joueur(max_essais, nb_lettres, mot_cible, mots, nb_mots);
+            break;
+        case 1: //Bot entropique qui peut tenter des mots non compatibles
+            printf("mot_cible : %s\n", mot_cible);
+            partie_bot1(max_essais, nb_lettres, mot_cible, mots, nb_mots, nom_fichier); 
+            break;
+        case 2: //Bot entropique qui ne peut tenter que des mots compatibles
+            printf("mot_cible : %s\n", mot_cible);
+            partie_bot2(max_essais, nb_lettres, mot_cible, mots, nb_mots, nom_fichier); 
+            break;
+        case 3: //Bot aléatoire à mémoire
+            printf("mot_cible : %s\n", mot_cible);
+            partie_bot3(max_essais, nb_lettres, mot_cible, mots, nb_mots, nom_fichier);
+            break;
+        case 4: //Bot mixte
+            printf("mot_cible : %s\n", mot_cible);
+            partie_bot4(max_essais, nb_lettres, mot_cible, mots, nb_mots, nom_fichier);
+            break;
     }
 
     return 0;
