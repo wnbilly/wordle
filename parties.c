@@ -7,20 +7,7 @@
 #include "calculs.h"
 #include "entropie.h"
 
-
-//Main du Wordle
-/*Compile avec 
-gcc -Wall -Werror -Wfatal-errors -o JEU jeu.c acquisition.c tests_lettres.c calculs.c entropie.c -lm && ./JEU
-*/
-
-/*
-void initialisation_partie(char* mot_cible, )
-
-
-void tour()
-*/
-
-
+//.c qui regroupe les déroulements de parties pour le joueur et les différents bots
 
 //Lance une partie jouée par un humain, retourne le nombre de coups pour gagner (-1 si perdu)
 int partie_joueur(int max_essais, int nb_lettres, char* mot_cible, char* mots[], int nb_mots)

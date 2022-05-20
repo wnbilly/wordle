@@ -108,12 +108,12 @@ void affichage_regles()
     printf("Exemple si le joueur joue renes et doit deviner nerfs :");
     int res_regles[] = {1,2,1,0,2};
     affichage_resultat("renes", res_regles, 5);
+    printf("\n-------------------\n\n");
 }
 
 int choix_mode()
 {
     int mode = 0;
-    printf("\n-------------------\n\n");
     printf_blanc();
     printf("-> Modes de jeu disponibles :\n");  
     printf_standard();
@@ -124,6 +124,15 @@ int choix_mode()
     printf("    4: bot Train-Coule\n\n");
     printf("Veuillez entrer votre choix : ");
     scanf("%d", &mode);
+
+    if (mode > 4) 
+    {
+        printf_rouge();
+        printf("Erreur ! Veuillez choisir un mode existant.\n\n");
+        printf_standard();
+        mode = choix_mode();
+    }
+
     return mode;
 }
 

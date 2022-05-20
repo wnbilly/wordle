@@ -3,7 +3,7 @@
 #include <string.h>
 #include <time.h>
 #include <math.h>
-#include "jeu.h"
+#include "parties.h"
 #include "acquisition.h"
 #include "tests_lettres.h"
 #include "calculs.h"
@@ -13,7 +13,9 @@
 //Programme destiné à la création de statistiques sur les différents bots
 
 /* Compile avec
-gcc -Wall -Werror -Wfatal-errors -o STATS stats.c jeu.c entropie.c calculs.c acquisition.c tests_lettres.c -lm && ./STATS
+
+gcc -Wall -Werror -Wfatal-errors -o STATS stats.c parties.c entropie.c calculs.c acquisition.c tests_lettres.c -lm && ./STATS
+
 */
 
 void stats_bot2(int max_essais, int nb_lettres, char* mots[], int nb_mots, char* nom_fichier, int taille_echantillon)
