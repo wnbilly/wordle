@@ -99,8 +99,10 @@ void affichage_regles()
 {
     int regles;
 
-    printf("Voulez-vous voir les règles de Wordle ?  (Yes : 1, No : 0)\n");
+    printf_blanc();
+    printf("\nVoulez-vous voir les règles de Wordle ?  (Yes : 1, No : 0)\n\n-> ");
     scanf("%d", &regles);
+    printf_standard();
 
     if (regles==1)
     {
@@ -135,17 +137,18 @@ int choix_mode()
 {
     int mode = 0;
     printf_blanc();
-    printf("-> Modes de jeu disponibles :\n");  
+    printf("-> Modes de jeu disponibles :\n\n");  
     printf_standard();
     printf("    0: jouer soi-même\n");  
     printf("    1: bot max E[h]\n");
     printf("    2: bot entropique Otanpi qui ne joue que des coups potentiellement gagnants\n");
     printf("    3: bot naïf à mémoire\n");  
-    printf("    4: bot Train-Coule\n\n");
+    printf("    4: bot Train-Coule x Otanpi mots potentiellement gagnants\n");
+    printf("    5: Bot Train-Coule x naïf à mémoire\n\n");
     printf("Veuillez entrer votre choix : ");
     scanf("%d", &mode);
 
-    if (mode > 4) 
+    if (mode > 5) 
     {
         printf_rouge();
         printf("Erreur ! Veuillez choisir un mode existant.\n\n");

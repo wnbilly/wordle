@@ -142,8 +142,8 @@ int main(int argc, char* argv[])
     int taille_echantillon = atoi(argv[2]); //Le nombre de parties à jouer en 2e arguement du programme
 
     //ACQUISITION MOTS
-    char* nom_fichier = "liste_complete_triee.txt";
-    int taille_test = 5070;
+    char* nom_fichier = "english_full.txt";//"liste_complete_triee.txt";
+    int taille_test = 15919; //5070
     char* mots[taille_test];
     int nb_mots = extraction_mots(mots, nom_fichier, nb_lettres);
 
@@ -151,10 +151,10 @@ int main(int argc, char* argv[])
 
     switch (bot)
     {
-        case 1: //Bot entropique qui peut tenter des mots non compatibles
+        case 1: //Bot entropique Otanpi qui peut tenter des mots non compatibles
             //stats_bot1(max_essais, nb_lettres, mots, nb_mots, nom_fichier, taille_echantillon);
             break;
-        case 2: //Bot entropique qui ne peut tenter que des mots compatibles
+        case 2: //Bot entropique Otanpi qui ne peut tenter que des mots compatibles
             stats_bot2(max_essais, nb_lettres, mots, nb_mots, nom_fichier, taille_echantillon);
             break;
         case 3: //Bot aléatoire à mémoire
