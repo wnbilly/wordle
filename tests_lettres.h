@@ -17,6 +17,20 @@ void printf_blanc();
 
 void printf_standard();
 
+int test_victoire(int resultat[], int nb_lettres);
+
+void remplissage_resultat(char* mot_cible, char* essai, int resultat[], int nb_lettres);
+
+void reset_resultat(int resultat[], int nb_lettres);
+
+void affichage_regles();
+
+int choix_mode();
+
+void affichage_gagne(int nb_essais);
+
+void affichage_perdu(char* mot_cible);
+
 void affichage_debug(int tableau[], int taille);
 
 void affichage_resultat(char* essai, int resultat[], int nb_lettres);

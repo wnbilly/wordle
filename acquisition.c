@@ -49,7 +49,7 @@ int extraction_mots(char* mots[], char* nom_fichier, int nb_lettres) //FONCTION 
         }
     } 
     fclose(fichier);
-    printf("Fin d'acquisition des mots : %d mots à %d lettres\n",i,nb_lettres);
+    //printf("Fin d'acquisition des mots : %d mots à %d lettres\n",i,nb_lettres);
     return i-1;
 }
 
