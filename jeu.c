@@ -23,12 +23,8 @@ int main(int argc, char* argv[])
     int max_essais;
     int nb_lettres;
     int mode;
-    int regles;
-
-    printf("Voulez-vous voir les règles de Wordle ?  (Yes : 1, No : 0)\n");
-    scanf("%d", &regles);
-
-    if (regles==1) affichage_regles();
+    
+    affichage_regles();
 
     mode = choix_mode();
 

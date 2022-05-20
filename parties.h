@@ -11,4 +11,6 @@ int partie_bot3(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
 
 int partie_bot4(int max_essais, int nb_lettres, char* mot_cible, char* mots[], int nb_mots, char* nom_fichier);
 
+int partie_bot5(int max_essais, int nb_lettres, char* mot_cible, char* mots[], int nb_mots, char* nom_fichier);
+
 #endif //PARTIES_C

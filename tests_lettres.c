@@ -3,7 +3,7 @@
 #include <string.h>
 #include "tests_lettres.h"
 
-//Tests des lettres entre essais et mot à deviner
+//Programme contenant les fonctions d'affichages et les différents tests de lettres entre essais et mot à deviner
 
 //Code pour résultat :
 
@@ -11,41 +11,49 @@
 // 1 pour bonne lettre à mauvaise place
 // 2 pour bonne lettre à la bonne place
 
-void printf_vert() //Passe les caractères de console en vert gras
+//Passe les caractères de console en vert gras
+void printf_vert() 
 {
     printf("\033[1;32m");
 }
 
-void printf_fond_vert() //Passe le fond de console en vert gras
+//Passe le fond de console en vert
+void printf_fond_vert() 
 {
     printf("\033[7;32m");
 }
 
-void printf_jaune() //Passe les caractères de console en jaune gras
+//Passe les caractères de console en jaune gras
+void printf_jaune() 
 {
     printf("\033[1;33m");
 }
 
-void printf_rouge() //Passe les caractères de console en rouge gras
+//Passe les caractères de console en rouge gras
+void printf_rouge() 
 {
     printf("\033[1;31m");
 }
 
-void printf_fond_rouge() //Passe le fond de console en rouge gras
+//Passe le fond de console en rouge gras
+void printf_fond_rouge() 
 {
     printf("\033[7;31m");
 }
 
-void printf_blanc() //Passe les caractères de console en blanc gras
+//Passe les caractères de console en blanc gras
+void printf_blanc()
 {
     printf("\033[1;37m");
 }
 
-void printf_standard() //Passe les caractères de console en format standard
+//Passe les caractères de console en format standard
+void printf_standard() 
 {
     printf("\033[0;37m");
 }
 
+//Affiche un tableau
 void affichage_debug(int tableau[], int taille)
 {
     for (int j=0; j<taille; j++)
@@ -55,6 +63,7 @@ void affichage_debug(int tableau[], int taille)
     printf("\n");
 }
 
+//Teste si le joueur a gagné
 int test_victoire(int resultat[], int nb_lettres)
 {
     for (int i=0; i<nb_lettres; i++)
@@ -67,6 +76,7 @@ int test_victoire(int resultat[], int nb_lettres)
     return 1; //Gagné
 }
 
+//Remplit resultat[] en fonction de l'essai du joueur relativement au mot_cible
 void remplissage_resultat(char* mot_cible, char* essai, int resultat[], int nb_lettres)
 {
     //On détecte les lettres à mettre en vert
@@ -84,33 +94,43 @@ void reset_resultat(int resultat[], int nb_lettres)
     }
 }
 
+//Permet au joueur de choisir via le clavier s'il veut voir les règles
 void affichage_regles()
 {
-    printf_blanc();
-    printf("-> Règles de Wordle :\n");
-    printf_standard();
-    printf("    L'utilisateur dispose de 6 essais pour deviner un mot de 5 lettres.\n");
-    printf("    A chaque essai, le jeu indique les lettres contenues dans le mot joué et dans le mot à deviner.\n");
-    
-    printf("    La couleur");
-    printf_vert();
-    printf(" verte ");
-    printf_standard();
-    printf("correspond aux lettres contenues dans les deux mots et à la bonne place.\n");
+    int regles;
 
-    printf("    La couleur");
-    printf_jaune();
-    printf(" jaune ");
-    printf_standard();
-    printf("indique les lettres communes aux deux mots mais à la mauvaise place.");
-    printf("    La couleur blanche indique les lettres qui ne sont pas dans le mot à deviner.\n\n");
+    printf("Voulez-vous voir les règles de Wordle ?  (Yes : 1, No : 0)\n");
+    scanf("%d", &regles);
 
-    printf("Exemple si le joueur joue renes et doit deviner nerfs :");
-    int res_regles[] = {1,2,1,0,2};
-    affichage_resultat("renes", res_regles, 5);
-    printf("\n-------------------\n\n");
+    if (regles==1)
+    {
+        printf_blanc();
+        printf("\n-> Règles de Wordle :\n");
+        printf_standard();
+        printf("    L'utilisateur dispose de 6 essais pour deviner un mot de 5 lettres.\n");
+        printf("    A chaque essai, le jeu indique les lettres contenues dans le mot joué et dans le mot à deviner.\n");
+        
+        printf("    La couleur");
+        printf_vert();
+        printf(" verte ");
+        printf_standard();
+        printf("correspond aux lettres contenues dans les deux mots et à la bonne place.\n");
+
+        printf("    La couleur");
+        printf_jaune();
+        printf(" jaune ");
+        printf_standard();
+        printf("indique les lettres communes aux deux mots mais à la mauvaise place.");
+        printf("    La couleur blanche indique les lettres qui ne sont pas dans le mot à deviner.\n\n");
+
+        printf("Exemple si le joueur joue renes et doit deviner nerfs :");
+        int res_regles[] = {1,2,1,0,2};
+        affichage_resultat("renes", res_regles, 5);
+        printf("\n-------------------\n\n");
+    }
 }
 
+//Permet au joueur de choisir son mode de jeu
 int choix_mode()
 {
     int mode = 0;
@@ -136,6 +156,7 @@ int choix_mode()
     return mode;
 }
 
+//Préviens le joueur qu'il a gagné et affiche le nombre d'essais
 void affichage_gagne(int nb_essais)
 {
     printf_fond_vert();
@@ -143,6 +164,7 @@ void affichage_gagne(int nb_essais)
     printf_standard();
 }
 
+//Préviens le joueur qu'il a perdu et affiche le mot à deviner
 void affichage_perdu(char* mot_cible)
 {
     printf_fond_rouge();
@@ -152,6 +174,7 @@ void affichage_perdu(char* mot_cible)
     printf_standard();
 }
 
+//Affiche l'essai du joueur avec les couleurs correspondantes pour chaque lettre
 void affichage_resultat(char* essai, int resultat[], int nb_lettres)
 {
     for (int i = 0; i<nb_lettres; i++)
@@ -176,7 +199,7 @@ void affichage_resultat(char* essai, int resultat[], int nb_lettres)
     printf("\n");
 }
 
-//Remplis les 2 (lettres verts) de resultat
+//Remplis les 2 (lettres vertes) de resultat
 void test_place(char* mot, char* essai, int resultat[], int nb_lettres)
 {
     for (int i = 0; i<nb_lettres; i++)
@@ -212,7 +235,7 @@ void test_lettre(char* mot, char* essai, int resultat[], int nb_lettres)
     free(trace);
 }
 
-//Vérifie si le mot joué par le joueur est dans le dictionnaire du jeus
+//Vérifie si le mot joué par le joueur est dans le dictionnaire du jeu
 int test_existence_mot(char *mots[], char* essai, int nb_mots)
 {
     for (int i=0; i<nb_mots; i++)   //AMELIORABLE SI LA LISTE EST TRIEE PAR ORDRE ALPHABETIQUE
