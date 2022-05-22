@@ -73,20 +73,16 @@ int partie_bot1(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
     struct donnees* all_data[max_essais];
     init_data_array(all_data, max_essais);
 
-    essai[0] = 'a';
-    essai[1] = 'e';
-    essai[2] = 'r';
-    essai[3] = 'e';
+    essai[0] = 'a';//'t'; //Pour changer entre anglais et français
+    essai[1] = 'e';//'a'; //Uniquemenet pour faire les stats
+    essai[2] = 'r';//'r';
+    essai[3] = 'e';//'i';
     essai[4] = 'e';
-
 
     char* mots_probables[nb_mots];
     char* mots_probables_buffer[nb_mots];
     int nb_mots_prob = nb_mots;
     int nb_mots_prob_buffer;
-
-    char* mots_joues[max_essais];
-    mots_joues[0]=essai;
 
     copy_array(mots_probables, nb_mots, mots, nb_mots); //Avant un quelconque essai, tous les mots sont probables
 
@@ -96,26 +92,15 @@ int partie_bot1(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
 
         if (nb_essais!=0)
         {
-            nb_mots_prob_buffer = liste_mots_prob(mots_probables_buffer, mots_probables, nb_mots_prob, all_data, mots_joues, nb_essais);
+            nb_mots_prob_buffer = liste_mots_prob(mots_probables_buffer, mots_probables, nb_mots_prob, all_data, nb_essais);
 
-            printf("==================PROB==============%d mots\n", nb_mots_prob);
-            //affichage_tableau_mots(mots_probables, nb_mots_prob);
             printf("nb_mots_prob_buffer : %d\n", nb_mots_prob_buffer);
-            //printf("nb_mots_prob%d : %d\n",nb_essais, nb_mots_prob);
-            printf("==================BUFFER==============%d mots\n", nb_mots_prob_buffer);
-            //affichage_tableau_mots(mots_probables_buffer, nb_mots_prob_buffer);
-            
-
-            //*mots_probables = *mots_probables_buffer;
             copy_array(mots_probables, nb_mots_prob, mots_probables_buffer, nb_mots_prob_buffer);
             nb_mots_prob = nb_mots_prob_buffer;
-
-            printf("==================PROB==============%d mots\n", nb_mots_prob);
-            //affichage_tableau_mots(mots_probables, nb_mots_prob);
-            printf("==================BUFFER==============%d mots\n", nb_mots_prob_buffer);
-            //affichage_tableau_mots(mots_probables_buffer, nb_mots_prob_buffer+1);
-
-            trouver_mot_h_max(mots, nb_mots, mots_probables_buffer, nb_mots_prob_buffer, essai, liste_patterns);
+            //Recherche d'information en début de partie
+            if (nb_essais<max_essais-3) trouver_mot_h_max(mots, nb_mots, mots_probables_buffer, nb_mots_prob_buffer, essai, liste_patterns);
+            //On tente de gagner en fin de partie
+            else trouver_mot_h_max(mots_probables_buffer, nb_mots_prob_buffer, mots_probables_buffer, nb_mots_prob_buffer, essai, liste_patterns);
         }
 
         printf("essai :%s\n",essai);
@@ -127,7 +112,6 @@ int partie_bot1(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
         extraction_donnees(essai, resultat, all_data[nb_essais]);
 
         affichage_donnees(all_data[nb_essais]);
-
 
         //TEST VICTOIRE
             if (test_victoire(resultat, nb_lettres)==1)
@@ -143,10 +127,14 @@ int partie_bot1(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
         if (nb_essais == max_essais)
         {
             affichage_perdu(mot_cible);
+            //free_data_array(all_data, max_essais);
+            free_matrix(liste_patterns, 243, 5);
             free(resultat);;
             return -1; //Le joueur a perdu
         }
 
+    //free_data_array(all_data, max_essais);
+    free_matrix(liste_patterns, 243, 5);
     free(resultat);
     return nb_essais+1;    
 }
@@ -167,10 +155,10 @@ int partie_bot2(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
 
     struct donnees* data = init_data();
 
-    essai[0] = 't';
-    essai[1] = 'a';
-    essai[2] = 'r';
-    essai[3] = 'i';
+    essai[0] = 'a';//'t'; //Pour changer entre anglais et français
+    essai[1] = 'e';//'a'; //Uniquemenet pour faire les stats
+    essai[2] = 'r';//'r';
+    essai[3] = 'e';//'i';
     essai[4] = 'e';
 
     char* mots_probables[nb_mots];
@@ -187,15 +175,8 @@ int partie_bot2(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
         if (nb_essais!=0)
         {
             nb_mots_prob_buffer = liste_mots_prob1(mots_probables_buffer, mots_probables, nb_mots_prob+1, data);
-/*
-            if (nb_essais>1)
-            {
-                printf("==================PROB-1==============%d mots\n", nb_mots_prob);
-                affichage_tableau_mots(mots_probables, nb_mots_prob);
-            }
-            */
-            //printf("==================PROB==============%d mots\n", nb_mots_prob_buffer);
-            //affichage_tableau_mots(mots_probables_buffer, nb_mots_prob_buffer);
+
+        printf("nb_mots_prob_buffer : %d\n", nb_mots_prob_buffer);
 
             copy_array(mots_probables, nb_mots_prob, mots_probables_buffer, nb_mots_prob_buffer);
             nb_mots_prob = nb_mots_prob_buffer;
@@ -264,12 +245,9 @@ int partie_bot3(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
     {
         printf("Essai %d/%d. ", nb_essais+1, max_essais);
 
-
         nb_mots_prob_buffer = liste_mots_prob1(mots_probables_buffer, mots_probables, nb_mots_prob, data);
 
-        //Pour afficher les mots compatibles avec les données
-        //printf("==================PROB==============%d mots\n", nb_mots_prob_buffer);
-        //affichage_tableau_mots(mots_probables_buffer, nb_mots_prob_buffer);
+        printf("nb_mots_prob_buffer : %d\n", nb_mots_prob_buffer);
 
         copy_array(mots_probables, nb_mots_prob, mots_probables_buffer, nb_mots_prob_buffer);
         nb_mots_prob = nb_mots_prob_buffer;
@@ -284,8 +262,6 @@ int partie_bot3(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
         affichage_resultat(essai, resultat, nb_lettres);
 
         extraction_donnees(essai, resultat, data);
-
-        //affichage_donnees(data);
 
         //TEST VICTOIRE
             if (test_victoire(resultat, nb_lettres)==1)
@@ -322,11 +298,11 @@ int partie_bot4(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
 
     struct donnees* data = init_data();
 
-    essai[0] = 't';
-    essai[1] = 'r';
-    essai[2] = 'a';
-    essai[3] = 'i';
-    essai[4] = 'n';
+    essai[0] = 't';//'t';
+    essai[1] = 'r';//'r';
+    essai[2] = 'a';//'a';
+    essai[3] = 'i';//'i';
+    essai[4] = 'n';//'n';
 
     char* mots_probables[nb_mots];
     char* mots_probables_buffer[nb_mots];
@@ -342,26 +318,18 @@ int partie_bot4(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
         if (nb_essais!=0)
         {
             nb_mots_prob_buffer = liste_mots_prob1(mots_probables_buffer, mots_probables, nb_mots_prob+1, data);
-/*
-            if (nb_essais>1)
-            {
-                printf("==================PROB-1==============%d mots\n", nb_mots_prob);
-                affichage_tableau_mots(mots_probables, nb_mots_prob);
-            }
-            */
-            //printf("==================PROB==============%d mots\n", nb_mots_prob_buffer);
-            //affichage_tableau_mots(mots_probables_buffer, nb_mots_prob_buffer);
+            printf("nb_mots_prob_buffer : %d\n", nb_mots_prob_buffer);
 
             copy_array(mots_probables, nb_mots_prob, mots_probables_buffer, nb_mots_prob_buffer);
             nb_mots_prob = nb_mots_prob_buffer;
 
             if (nb_essais==1)
             {
-                essai[0] = 'c';
-                essai[1] = 'o';
-                essai[2] = 'u';
-                essai[3] = 'l';
-                essai[4] = 'e';
+                essai[0] = 'c';//'c';
+                essai[1] = 'o';//'o';
+                essai[2] = 'u';//'u';
+                essai[3] = 'l';//'l';
+                essai[4] = 'e';//'e';
             }
             else trouver_mot_h_max(mots_probables_buffer, nb_mots_prob_buffer, mots_probables_buffer, nb_mots_prob_buffer, essai, liste_patterns);
         }
@@ -374,8 +342,6 @@ int partie_bot4(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
 
         extraction_donnees(essai, resultat, data);
 
-        //affichage_donnees(data);
-
         //TEST VICTOIRE
             if (test_victoire(resultat, nb_lettres)==1)
             {           //GAGNE
@@ -384,7 +350,7 @@ int partie_bot4(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
             } else {    //PAS GAGNE
                 reset_resultat(resultat, nb_lettres);
             }
-        
+
     }
 
         if (nb_essais == max_essais)
@@ -415,12 +381,11 @@ int partie_bot5(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
 
     struct donnees* data = init_data();
 
-    essai[0] = 't';
-    essai[1] = 'r';
-    essai[2] = 'a';
-    essai[3] = 'i';
-    essai[4] = 'n';
-
+    essai[0] = 't';//'t';
+    essai[1] = 'r';//'r';
+    essai[2] = 'a';//'a';
+    essai[3] = 'i';//'i';
+    essai[4] = 'n';//'n';
 
     char* mots_probables[nb_mots];
     char* mots_probables_buffer[nb_mots];
@@ -436,26 +401,19 @@ int partie_bot5(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
         if (nb_essais!=0)
         {
             nb_mots_prob_buffer = liste_mots_prob1(mots_probables_buffer, mots_probables, nb_mots_prob+1, data);
-/*
-            if (nb_essais>1)
-            {
-                printf("==================PROB-1==============%d mots\n", nb_mots_prob);
-                affichage_tableau_mots(mots_probables, nb_mots_prob);
-            }
-            */
+
             printf("nb_mots_prob = %d\n", nb_mots_prob_buffer);
-            //affichage_tableau_mots(mots_probables_buffer, nb_mots_prob_buffer);
 
             copy_array(mots_probables, nb_mots_prob, mots_probables_buffer, nb_mots_prob_buffer);
             nb_mots_prob = nb_mots_prob_buffer;
 
             if (nb_essais==1)
             {
-                essai[0] = 'c';
-                essai[1] = 'o';
-                essai[2] = 'u';
-                essai[3] = 'l';
-                essai[4] = 'e';
+                essai[0] = 'c';//'c';
+                essai[1] = 'o';//'o';
+                essai[2] = 'u';//'u';
+                essai[3] = 'l';//'l';
+                essai[4] = 'e';//'e';
             }
             else strcpy(essai, choix_mot(mots_probables, nb_mots_prob));
         }
@@ -468,8 +426,6 @@ int partie_bot5(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
 
         extraction_donnees(essai, resultat, data);
 
-        //affichage_donnees(data);
-
         //TEST VICTOIRE
             if (test_victoire(resultat, nb_lettres)==1)
             {           //GAGNE
@@ -478,7 +434,7 @@ int partie_bot5(int max_essais, int nb_lettres, char* mot_cible, char* mots[], i
             } else {    //PAS GAGNE
                 reset_resultat(resultat, nb_lettres);
             }
-        
+
     }
 
         if (nb_essais == max_essais)

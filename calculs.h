@@ -38,6 +38,8 @@ void free_data(struct donnees* data);
 
 void init_data_array(struct donnees* all_data[], int max_essais);
 
+void free_data_array(struct donnees* all_data[], int max_essais);
+
 void copy_array(char* array_dest[], int size_dest, char* array_src[], int size_src);
 
 

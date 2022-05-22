@@ -60,18 +60,3 @@ char* choix_mot(char* mots[], int nb_mots)
     //printf("%de mot choisi : %s\n",random,mots[random]);
     return mots[random];
 }
-/*
-int main(int argc, char* argv[])
-{
-    char* nom_fichier = "liste_francais.txt";
-    int taille_test=5000;
-    char* mots[taille_test];//=malloc(taille_test*sizeof(char*));
-
-    int nb_mots = extraction_mots(mots, nom_fichier,5);
-    
-    affichage_tableau_mots(mots, nb_mots);
-    choix_mot(mots,nb_mots);
-
-    return 0;
-}
-*/

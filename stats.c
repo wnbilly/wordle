@@ -14,9 +14,42 @@
 
 /* Compile avec
 
-gcc -Wall -Werror -Wfatal-errors -o STATS stats.c parties.c entropie.c calculs.c acquisition.c tests_lettres.c -lm && ./STATS
+gcc -Wall -Werror -Wfatal-errors -o STATS stats.c parties.c entropie.c calculs.c acquisition.c tests_lettres.c -lm && ./STATS mode taille_echantillon
+
+mode : de 1 à 5, num du bot choisi
+
+taille_echantillon : nb de parties quel le bot va jouer
 
 */
+
+//Pour le bot1, affiche le taux de réussite, le nombre d'essais moyen, le temps moyen d'une partie
+void stats_bot1(int max_essais, int nb_lettres, char* mots[], int nb_mots, char* nom_fichier, int taille_echantillon)
+{
+    float moyenne_nb_essais = 0;
+    int nb_gagne = 0;
+    int random;
+    clock_t t1 = clock();
+
+    for (int i=0; i<taille_echantillon; i++)
+    {
+        printf("%d\n",i);
+        random = rand()%nb_mots;
+        int nb_essais_partie = partie_bot1(max_essais, nb_lettres, mots[random], mots, nb_mots, nom_fichier);
+
+        if (nb_essais_partie > 0)
+        {
+            nb_gagne++;
+            moyenne_nb_essais = moyenne_nb_essais + nb_essais_partie;
+        }
+    }
+    moyenne_nb_essais = moyenne_nb_essais/nb_gagne;
+
+    clock_t t2=clock();
+    float temps = (float)(t2-t1)/(CLOCKS_PER_SEC*taille_echantillon);
+    printf_rouge();
+    printf("Sur %d parties, le bot1 en a gagné %.2f%% en %.2f essais et %.3f s en moyenne.\n", taille_echantillon, (float)nb_gagne/taille_echantillon*100, moyenne_nb_essais, temps);
+    printf_standard();
+}
 
 //Pour le bot2, affiche le taux de réussite, le nombre d'essais moyen, le temps moyen d'une partie
 void stats_bot2(int max_essais, int nb_lettres, char* mots[], int nb_mots, char* nom_fichier, int taille_echantillon)
@@ -142,8 +175,8 @@ int main(int argc, char* argv[])
     int taille_echantillon = atoi(argv[2]); //Le nombre de parties à jouer en 2e arguement du programme
 
     //ACQUISITION MOTS
-    char* nom_fichier = "english_full.txt";//"liste_complete_triee.txt";
-    int taille_test = 15919; //5070
+    char* nom_fichier = "liste_complete_triee.txt";//"english_full.txt";//
+    int taille_test = 5070; //15919
     char* mots[taille_test];
     int nb_mots = extraction_mots(mots, nom_fichier, nb_lettres);
 
@@ -152,7 +185,7 @@ int main(int argc, char* argv[])
     switch (bot)
     {
         case 1: //Bot entropique Otanpi qui peut tenter des mots non compatibles
-            //stats_bot1(max_essais, nb_lettres, mots, nb_mots, nom_fichier, taille_echantillon);
+            stats_bot1(max_essais, nb_lettres, mots, nb_mots, nom_fichier, taille_echantillon);
             break;
         case 2: //Bot entropique Otanpi qui ne peut tenter que des mots compatibles
             stats_bot2(max_essais, nb_lettres, mots, nb_mots, nom_fichier, taille_echantillon);

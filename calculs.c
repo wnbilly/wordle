@@ -229,6 +229,7 @@ void affichage_donnees(struct donnees* data)
     printf("\n");
 }
 
+//Renvoie une struct donnees
 struct donnees* init_data()
 {
     struct donnees* data = malloc(sizeof(struct donnees));
@@ -255,6 +256,7 @@ struct donnees* init_data()
     return data;
 }
 
+//Free struct donnees data
 void free_data(struct donnees* data)
 {
     free(data->lst_lettres);
@@ -263,11 +265,21 @@ void free_data(struct donnees* data)
     free(data);
 }
 
+//Initialise un tableau struct donnees de taille max_essais
 void init_data_array(struct donnees* all_data[], int max_essais)
 {
     for(int i=0; i<max_essais; i++)
     {
         all_data[i]=init_data();
+    }
+}
+
+//Free un tableau struct donnees de taille max_essais
+void free_data_array(struct donnees* all_data[], int max_essais)
+{
+    for(int i=0; i<max_essais; i++)
+    {
+        free(all_data[i]);
     }
 }
 
@@ -297,7 +309,7 @@ void copy_array(char* array_dest[], int size_dest, char* array_src[], int size_s
     }
 }
 
-int mainca(int argc, char* argv[])
+int mainca(int argc, char* argv[]) //Utilisé pour vérifier les fonctions
 {
     //struct donnees* data = init_data();
 
@@ -318,33 +330,5 @@ int mainca(int argc, char* argv[])
 
     correspondance_ltr_jaune("ilots", all_data[2]);
 
-    /*
-    printf("corres_verte : %d\n",correspondance_ltr_verte(mot_test, data));
-    printf("corres_jaune : %d\n",correspondance_ltr_jaune(mot_test, data));
-    printf("corres_ban: %d\n",test_ltr_ban(mot_test, data));
-    */
-/*
-    char* array_src[2];
-    array_src[0]="aaaaa";
-    array_src[1]="bbbbb";
-
-    char* array_dest[4];
-    array_dest[0]="aloha";
-    array_dest[1]="salut";
-    array_dest[2]="hello";
-    array_dest[3]="ensta";
-
-    printf("SRC\n");
-    affichage_tableau_mots(array_src, 2);
-    printf("DEST\n");
-    affichage_tableau_mots(array_dest, 4);
-    printf("/COPY\n");
-    copy_array(array_dest, 4, array_src, 2);
-    array_src[1]="error";
-    printf("SRC\n");
-    affichage_tableau_mots(array_src, 2);
-    printf("DEST\n");
-    affichage_tableau_mots(array_dest, 4);
-*/
     return 0;
 }

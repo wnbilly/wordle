@@ -265,24 +265,3 @@ void acquisition_clavier(char* essai, int nb_lettres)
     printf_standard();
     printf("\n");
 }
-
-/*
-int main(int argc, char* argv[])
-{
-    char* mot="PORTE";
-    int nb_lettres=5;
-    char essai[nb_lettres+1]; //+1 pour détecter si l'utilisateur met trop de lettres
-    //char* essai;
-    acquisition_clavier(essai, nb_lettres);
-    
-    int* resultat=(int*) calloc(nb_lettres,sizeof(int));
-
-    test_place(mot,essai,resultat,nb_lettres);
-    test_lettre(mot,essai,resultat, nb_lettres);
-
-    //affichage_debug(resultat,nb_lettres);
-
-    affichage_resultat(essai, resultat, nb_lettres);
-    return 0;
-}
-*/
