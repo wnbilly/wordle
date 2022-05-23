@@ -43,9 +43,9 @@ int main(int argc, char* argv[])
         max_essais = 6;
 
         //ACQUISITION MOTS
-        char* nom_fichier = "english_full.txt";//"liste_complete_triee.txt";
-        int taille_test = 15919;
-        char* mots[taille_test];
+        char* nom_fichier = "liste_complete_triee.txt";//"english_full.txt";//
+        int taille_init = 5070;//15919;
+        char* mots[taille_init];
         int nb_mots = extraction_mots(mots, nom_fichier, nb_lettres);
         printf("nb_mots : %d\n", nb_mots);
 
