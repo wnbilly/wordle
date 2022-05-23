@@ -125,7 +125,7 @@ void affichage_regles()
         printf("indique les lettres communes aux deux mots mais à la mauvaise place.");
         printf("    La couleur blanche indique les lettres qui ne sont pas dans le mot à deviner.\n\n");
 
-        printf("Exemple si le joueur joue renes et doit deviner nerfs :");
+        printf("Exemple si le joueur joue renes et doit deviner nerfs, le jeu répond : ");
         int res_regles[] = {1,2,1,0,2};
         affichage_resultat("renes", res_regles, 5);
         printf("\n-------------------\n\n");
