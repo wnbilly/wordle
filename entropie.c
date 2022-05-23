@@ -176,28 +176,3 @@ void creation_liste_patterns(int nb_lettres, int** liste_patterns) //OU BASE 3
         }
     }
 }
-
-int mainen(int argc, char* argv[])
-{
-    char* nom_fichier = "liste_complete_triee.txt";
-
-    int taille_test = 5070;
-    char* mots_a_tester[taille_test];
-
-    int nb_mots_a_tester = extraction_mots(mots_a_tester, nom_fichier, 5);
-
-    int** liste_patterns;
-    init_matrix(&liste_patterns, 243, 5);
-    creation_liste_patterns(5, liste_patterns);
-
-    //affichage_tableau_mots(mots_probables, nb_mots_probables);
-    
-    calcul_entropie_mot("aeree", mots_a_tester, nb_mots_a_tester, liste_patterns);
-/*
-    char mot_h_max[5];
-    trouver_mot_h_max(mots_a_tester, nb_mots_a_tester, mots_a_tester, nb_mots_a_tester, mot_h_max, liste_patterns);
-*/
-    free(*liste_patterns);
-
-    return 0;
-}

@@ -35,6 +35,38 @@ int mot_est_dans(char* liste[], int taille, char* mot)
     return 0;
 }
 
+//Retourne la liste des positions d'une lettre dans un mot, pos_jaune_courante est supposé de taille nb_lettres
+void position_lettre_dans_mot(char* mot, char lettre, int* pos_jaune_mot)
+{
+    int nb_lettres = 5;
+    int indice_res = 0;
+    for (int i=0; i<nb_lettres; i++)
+    {
+        if (mot[i]==lettre)
+        {
+            pos_jaune_mot[indice_res]=i;
+            indice_res++;
+        }
+    }
+}
+
+//Retourne le nombre d'une lettre jaune particulière dans data
+//et remplit la liste des positions d'une lettre dans un struct donnees, pos est supposé de taille nb_lettres
+int nb_position_lettre_jaune_dans_data(struct donnees* data, char lettre, int* pos)
+{
+    int nb_lettres = 5;
+    int indice_res = 0;
+    for (int i=0; i<nb_lettres; i++)
+    {
+        if (data->lst_lettres[i]==lettre && data->lst_etats[i]==1)
+        {
+            pos[indice_res]=data->lst_pos[i];
+            indice_res++;
+        }
+    }
+    return indice_res;
+}
+
 //Retourne le nombre d'occurences d'une lettre dans un mot
 int nb_occurences(char* mot, char lettre)
 {
@@ -47,6 +79,7 @@ int nb_occurences(char* mot, char lettre)
     return nb_occur;
 }
 
+//Retourn le nombre d'occurences à obtenir dans un mot pour le bannir
 int nb_occurences_ban(char* essai, int* resultat, char lettre)
 {
     int nb_lettres = sizeof(essai);
@@ -65,7 +98,6 @@ int nb_occurences_ban(char* essai, int* resultat, char lettre)
 int correspondance_ltr_jaune(char* mot_test, struct donnees* data)
 {
     int nb_lettres = 5;
-
     int nb_jaunes = 0;
     int nb_corres = 0;
     int* trace = (int*) calloc(nb_lettres,sizeof(int)); //Pour se rappeler des lettres déjà détectées : 1 si déjà détectée, 0 sinon
@@ -309,26 +341,3 @@ void copy_array(char* array_dest[], int size_dest, char* array_src[], int size_s
     }
 }
 
-int mainca(int argc, char* argv[]) //Utilisé pour vérifier les fonctions
-{
-    //struct donnees* data = init_data();
-
-    char* essai = "mande";
-    int resultat[5] = {0,2,2,2,2};
-    int max_essais = 6;
-
-    affichage_resultat(essai, resultat, 5);
-
-    struct donnees* all_data[6];
-    init_data_array(all_data, max_essais);
-
-    extraction_donnees(essai, resultat, all_data[2]);
-
-    affichage_donnees(all_data[2]);
-
-    printf("compatible : %d\n", verif_compatibilite("bande", all_data[2]));
-
-    correspondance_ltr_jaune("ilots", all_data[2]);
-
-    return 0;
-}

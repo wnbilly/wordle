@@ -17,8 +17,6 @@ int main(int argc, char* argv[])
 {
     srand(time(0));
 
-    //AFFICHAGE REGLES ET BIENVENUE ETC
-
     //PARAMETRES DE LA PARTIE
     int max_essais;
     int nb_lettres;
