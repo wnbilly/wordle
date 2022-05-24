@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include "acquisition.h"
-#include "tests_lettres.h"
 #include "calculs.h"
 #include "entropie.h"
 

@@ -5,8 +5,7 @@
 #include "parties.h"
 #include "acquisition.h"
 #include "tests_lettres.h"
-#include "calculs.h"
-#include "entropie.h"
+
 
 //Main du Wordle
 /*Compile avec 
