@@ -5,7 +5,7 @@ L'essence du projet est d'implémenter une version du jeu en console, puis d'uti
 
 
 Ligne de compilation :
-gcc -Wall -Werror -Wfatal-errors -o JEU jeu.c acquisition.c tests_lettres.c calculs.c entropie.c -lm && ./JEU
+gcc -Wall -Werror -Wfatal-errors -o JEU jeu.c acquisition.c tests_lettres.c calculs.c entropie.c parties.c -lm && ./JEU
 
 
 Règles du jeu :
