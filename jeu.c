@@ -22,9 +22,11 @@ int main(int argc, char* argv[])
     int mode;
     int partie_en_cours = 1;
 
+    affichage_regles();
+
     while (partie_en_cours!=0)
     {
-        affichage_regles();
+        
 
         mode = choix_mode();
 
